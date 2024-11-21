@@ -6,7 +6,7 @@ const List = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sort, setSort] = useState("rating"); // 기본 정렬 기준
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(""); // 앙기모띠
   const [page, setPage] = useState(0);
 
   useEffect(() => {
