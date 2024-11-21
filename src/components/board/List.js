@@ -13,15 +13,14 @@ const List = () => {
     // 책 목록을 불러오는 API 호출
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`http://localhost:8181/list`, {
+        const response = await axios.get(`http://localhost:8181/board/list`, {
           params: {
             page: page,
             sort: sort,
             query: query,
           },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰을 로컬스토리지에서 가져옵니다.
-          },
+          // Authorization 헤더 제거
+          headers: {},
         });
 
         setBooks(response.data.result.bList);
