@@ -130,7 +130,7 @@ const Detail = () => {
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <li key={review.id}>
-              <strong>{review.nickname}:</strong>
+              <strong>{review.memberName}:</strong>
               <p>{review.content}</p>
               <p>평점: {review.rating} / 5</p>
             </li>
