@@ -11,7 +11,11 @@ const Detail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true); // 로그인 상태 확인 변수
-  
+  // 페이징 처리
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [pageSize] = useState(10);
+
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
@@ -37,8 +41,44 @@ const Detail = () => {
 
     if (bookId) {
       fetchBookDetails();
+      fetchReviews(0); // 첫 페이지 데이터 요청
     }
   }, [bookId]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPage) {
+      fetchReviews(newPage);
+    }
+  };
+
+  const fetchReviews = async (page) => {
+    setLoading(true); // 로딩 시작
+    try {
+      const response = await axios.get(
+        `http://localhost:8181/board/detail/${bookId}?page=${page}&size=${pageSize}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // 로그인된 사용자의 토큰을 보내야 함
+          },
+        }
+      );
+      const data = response.data;
+
+      if (data.statusCode === 200) {
+        const result = data.result;
+        setReviews(result.reviewList); // 현재 페이지의 리뷰 목록
+        setCurrentPage(page); // 현재 페이지 번호 업데이트
+        setTotalPage(result.page.totalPages); // 전체 페이지 수 설정
+      } else {
+        alert("리뷰 데이터를 불러오는 데 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("리뷰 데이터 요청 중 오류:", err);
+      alert("리뷰 데이터를 불러오는 데 실패했습니다.");
+    } finally {
+      setLoading(false); // 로딩 종료
+    }
+  };
 
   // 리뷰 작성 처리
   const handleReviewChange = (e) => {
@@ -267,6 +307,36 @@ const Detail = () => {
           <p>리뷰가 없습니다.</p>
         )}
       </ul>
+
+      {/* 페이징 버튼 */}
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 0}
+        >
+          이전
+        </button>
+
+        {[...Array(totalPage).keys()].map((page) => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            style={{
+              fontWeight: currentPage === page ? "bold" : "normal",
+              textDecoration: currentPage === page ? "underline" : "none",
+            }}
+          >
+            {page + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPage - 1}
+        >
+          다음
+        </button>
+      </div>
 
       {isAuthenticated ? (
         <div className="review-form">
