@@ -63,6 +63,7 @@ const Detail = () => {
         }
       );
       const data = response.data;
+      console.log("페이지 버튼 클릭 후 전달받은 데이터: ", response.data);
 
       if (data.statusCode === 200) {
         const result = data.result;
@@ -106,9 +107,11 @@ const Detail = () => {
           },
         }
       );
+      console.log("리뷰 작성 성공 후 데이터: ", response.data);
 
       if (response.data.statusCode === 200) {
         // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
+
         setReviews((prevReviews) => [response.data.result, ...prevReviews]);
         setNewReview({ rating: "", content: "" }); // 리뷰 작성 후 폼 초기화
       } else {
@@ -245,7 +248,7 @@ const Detail = () => {
             modReview && modReview.reviewId === review.id ? (
               // 수정 폼 활성화 상태일 때
               <li key={review.id}>
-                <form onSubmit={handleUpdateReview}>
+                <form onSubmit={handleReviewSubmit}>
                   <div>
                     <label htmlFor="edit-rating">평점:</label>
                     <select
