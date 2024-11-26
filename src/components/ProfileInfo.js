@@ -6,9 +6,9 @@ import "./ProfileInfo.css"; // CSS 파일을 import
 
 const ProfileInfo = () => {
   const { token, setUserName } = useContext(AuthContext); // AuthContext에서 token 가져오기
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [profile, setProfile] = useState(null); // profile에 들어갈 email,nickname, createdAt
+  const [loading, setLoading] = useState(true); // 로딩중인지
+  const [error, setError] = useState(null); // 에리가 발생한지
   const [isEditing, setIsEditing] = useState(false); // 닉네임 수정 모드 상태
   const [newNickname, setNewNickname] = useState(""); // 수정할 닉네임
   const navigate = useNavigate(); // useNavigate 훅 사용
