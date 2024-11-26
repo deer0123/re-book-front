@@ -227,7 +227,7 @@ const Detail = () => {
           <strong>출판사:</strong> {book.pub}
         </p>
         <p>
-          <strong>평점:</strong> {book.rating} / 10
+          <strong>평점:</strong> {(book.rating / book.reviewCount).toFixed(1)}
         </p>
         <p>
           <strong>리뷰수:</strong> {book.reviewCount}
