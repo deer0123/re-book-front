@@ -65,7 +65,7 @@ const List = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>책 목록</h1>
       <div className="search-bar">
         <input

@@ -1,0 +1,33 @@
+/* 프로필 컨테이너 */
+.profile-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 프로필 상세 정보 */
+.profile-details {
+  margin-bottom: 20px;
+}
+
+.profile-details p {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+/* 수정 버튼 */
+.edit-profile-btn {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-profile-btn:hover {
+  background-color: #45a049;
+}
