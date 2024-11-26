@@ -87,8 +87,12 @@ const LoginPage = () => {
               />
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <Button color="secondary" fullWidth>
-                    비밀번호 변경
+                  <Button
+                    color="primary"
+                    fullWidth
+                    onClick={() => navigate("/sign-up")} // 회원가입 페이지로 이동
+                  >
+                    회원가입
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
