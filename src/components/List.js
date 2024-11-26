@@ -93,7 +93,7 @@ const List = () => {
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
-              <p className="rating">평점: {book.rating}</p>
+              <p className="rating">평점: {(book.rating / book.reviewCount).toFixed(1)}</p>
               <p>리뷰수: {book.reviewCount}</p>
             </div>
           ))}
