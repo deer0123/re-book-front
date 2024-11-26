@@ -1,38 +1,32 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import AuthContext from "../context/AuthContext"; // AuthContext 가져오기
 
-function Header({ isLoggedIn, name, onLogout }) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    onLogout(); // onLogout 함수를 호출하여 로그인 상태 변경
-    navigate("/"); // 홈페이지로 이동
-  };
-
-  const handleLogin = () => {
-    navigate("/sign-in"); // 로그인 페이지로 이동
-  };
+const Header = () => {
+  const { isLoggedIn, onLogout, userRole, userId, userName } =
+    useContext(AuthContext);
 
   return (
     <header style={styles.header}>
-      <h1 style={styles.title}>My Website</h1>
-      <div style={styles.userInfo}>
+      <h1 style={styles.logo}>My Website</h1>
+      <nav>
         {isLoggedIn ? (
-          <>
-            <span style={styles.welcome}>Welcome, {name}!</span>
-            <button onClick={handleLogout} style={styles.button}>
-              Log Out
+          <div style={styles.nav}>
+            <span style={styles.memberName}>환영합니다, {userName}님!</span>
+            <button onClick={onLogout} style={styles.logoutButton}>
+              로그아웃
             </button>
-          </>
+          </div>
         ) : (
-          <button onClick={handleLogin} style={styles.button}>
-            Log In
-          </button>
+          <div style={styles.nav}>
+            <a href="/sign-in" style={styles.loginButton}>
+              로그인
+            </a>
+          </div>
         )}
-      </div>
+      </nav>
     </header>
   );
-}
+};
 
 const styles = {
   header: {
@@ -40,27 +34,33 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "10px 20px",
-    backgroundColor: "#007BFF",
+    background: "#333",
     color: "#fff",
   },
-  title: {
+  logo: {
     fontSize: "24px",
-    margin: 0,
+    fontWeight: "bold",
   },
-  userInfo: {
+  nav: {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
   },
-  welcome: {
-    fontSize: "16px",
+  memberName: {
+    marginRight: "15px",
   },
-  button: {
+  loginButton: {
+    color: "#fff",
+    textDecoration: "none",
     padding: "5px 10px",
-    backgroundColor: "#fff",
-    color: "#007BFF",
+    border: "1px solid #fff",
+    borderRadius: "5px",
+  },
+  logoutButton: {
+    background: "red",
+    color: "#fff",
     border: "none",
-    borderRadius: "4px",
+    padding: "5px 10px",
+    borderRadius: "5px",
     cursor: "pointer",
   },
 };
