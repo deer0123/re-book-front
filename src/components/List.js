@@ -78,6 +78,7 @@ const List = () => {
         <select value={sort} onChange={(e) => setSort(e.target.value)}>
           <option value="rating">평점순</option>
           <option value="year">출판연도순</option>
+          <option value="reviewCount">리뷰순</option>
         </select>
       </div>
 
@@ -93,7 +94,14 @@ const List = () => {
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
-              <p className="rating">평점: {book.rating}</p>
+              <p>좋아요: {book.likeCount}</p>
+              <p className="rating">
+                평점:{" "}
+                {book.reviewCount
+                  ? (book.rating / book.reviewCount).toFixed(1)
+                  : 0}
+              </p>
+
               <p>리뷰수: {book.reviewCount}</p>
             </div>
           ))}

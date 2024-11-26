@@ -9,6 +9,7 @@ import Header from "./components/Header";
 import ProfileInfo from "./components/ProfileInfo";
 import LikedBooks from "./components/LikedBooks";
 import MyReviews from "./components/MyReviews";
+import SignUp from "./components/SignUp";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/profile/info" element={<ProfileInfo />} />
           <Route path="/profile/liked-books" element={<LikedBooks />} />
           <Route path="/profile/my-reviews" element={<MyReviews />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </AuthProvider>
     </Router>
