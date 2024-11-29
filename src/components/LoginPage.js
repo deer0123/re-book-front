@@ -39,11 +39,14 @@ const LoginPage = () => {
       // 응답 데이터 처리
       alert("로그인 성공!");
       const token = res.data.result.token;
-      const email = res.data.result.email;
+      const id = jwtDecode(token).sub;
       const role = jwtDecode(token).role;
       const name = jwtDecode(token).name;
+
+      console.log(jwtDecode(token).sub);
       localStorage.setItem("token", token);
-      onLogin(token, email, role, name); // Context에 상태 전달
+
+      onLogin(token, id, role, name); // Context에 상태 전달
 
       navigate("/"); // 메인 페이지로 이동
     } catch (e) {

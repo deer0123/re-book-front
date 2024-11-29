@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // useParams 임포트
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 사용
 import axios from "axios";
+import AuthContext from "../context/AuthContext"; // AuthContext 가져오기
 import "./Detail.css"; // CSS 파일을 import
 
 const Detail = () => {
@@ -20,6 +21,7 @@ const Detail = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [pageSize] = useState(10);
+  const { userId } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -48,7 +50,7 @@ const Detail = () => {
       fetchBookDetails();
       fetchReviews(0); // 첫 페이지 데이터 요청
     }
-  }, [bookId]);
+  }, []);
 
   const toggleLike = async () => {
     const token = localStorage.getItem("token");
@@ -84,14 +86,6 @@ const Detail = () => {
       console.error("좋아요 토글 요청 중 오류:", err);
       alert("좋아요 요청 중 문제가 발생했습니다.");
     }
-  };
-  // 토큰에서 사용자 정보를 가져오는 함수 예시 (JWT 토큰의 payload 부분에 저장된 사용자 ID를 사용)
-  const getUserIdFromToken = () => {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-
-    const decodedToken = jwtDecode(token);
-    return decodedToken.memberId; // 사용자 ID가 토큰에 포함되어 있다고 가정
   };
 
   const handlePageChange = (newPage) => {
@@ -135,7 +129,7 @@ const Detail = () => {
     }
   };
 
-  // 리뷰 작성 처리
+  // 리뷰 작성할때
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
     setNewReview({ ...newReview, [name]: value });
@@ -173,7 +167,11 @@ const Detail = () => {
       if (response.data.statusCode === 200) {
         // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
 
-        setReviews((prevReviews) => [response.data.result, ...prevReviews]);
+        setReviews((prevReviews) => [
+          { ...response.data.result, userId }, // 버튼을 위한 정보 추가
+          ...prevReviews,
+        ]);
+
         setNewReview({ rating: "", content: "" }); // 리뷰 작성 후 폼 초기화
       } else {
         setError("리뷰 작성에 실패했습니다.");
@@ -359,17 +357,19 @@ const Detail = () => {
                 <strong>{review.memberName}:</strong>
                 <p>{review.content}</p>
                 <p>평점: {review.rating} / 5</p>
-                {getUserIdFromToken() === review.memberId &&
-                  isAuthenticated && (
-                    <>
-                      <button onClick={() => handleEditClick(review)}>
-                        수정
-                      </button>
-                      <button onClick={() => handleDeleteReview(review.id)}>
-                        삭제
-                      </button>
-                    </>
-                  )}
+                {isAuthenticated && userId === review.memberUuid && (
+                  <>
+                    <p>현재 로그인된 사용자 ID: {userId}</p>
+                    <p>리뷰작성자의ID: {review.memberUuid}</p>
+
+                    <button onClick={() => handleEditClick(review)}>
+                      수정
+                    </button>
+                    <button onClick={() => handleDeleteReview(review.id)}>
+                      삭제
+                    </button>
+                  </>
+                )}
               </li>
             )
           )
