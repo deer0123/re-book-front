@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // useParams 임포트
+import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 사용
 import axios from "axios";
 import "./Detail.css"; // CSS 파일을 import
 
@@ -11,7 +12,9 @@ const Detail = () => {
   const [modReview, setModReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // 로그인 상태 확인 변수
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  ); // 로그인 상태 확인 변수
   const [liked, setLiked] = useState(false);
   // 페이징 처리
   const [currentPage, setCurrentPage] = useState(0);
@@ -47,15 +50,22 @@ const Detail = () => {
     }
   }, [bookId]);
 
-  // 좋아요 토글 핸들러
   const toggleLike = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      // 로그인 페이지로 리다이렉트 (선택 사항)
+      // window.location.href = "/login";
+      return; // 토큰이 없으면 더 이상 요청하지 않도록 종료
+    }
+
     try {
       const response = await axios.post(
         `http://localhost:8181/board/detail/${bookId}/toggle-like`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰 추가
+            Authorization: `Bearer ${token}`, // 토큰 추가
           },
         }
       );
@@ -68,12 +78,20 @@ const Detail = () => {
           likeCount, // 좋아요 수 업데이트
         }));
       } else {
-        alert("좋아요 처리 중 오류가 발생했습니다.");
+        alert("좋아요 요청 중 문제가 발생했습니다.");
       }
     } catch (err) {
       console.error("좋아요 토글 요청 중 오류:", err);
       alert("좋아요 요청 중 문제가 발생했습니다.");
     }
+  };
+  // 토큰에서 사용자 정보를 가져오는 함수 예시 (JWT 토큰의 payload 부분에 저장된 사용자 ID를 사용)
+  const getUserIdFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    const decodedToken = jwtDecode(token);
+    return decodedToken.memberId; // 사용자 ID가 토큰에 포함되어 있다고 가정
   };
 
   const handlePageChange = (newPage) => {
@@ -126,6 +144,13 @@ const Detail = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      // 로그인 페이지로 리다이렉트 (선택 사항)
+      // window.location.href = "/login";
+      return; // 토큰이 없으면 더 이상 요청하지 않도록 종료
+    }
     // 입력 값 검증
     if (!newReview.content || !newReview.rating) {
       alert("리뷰 내용을 입력하고 평점을 선택해주세요.");
@@ -334,16 +359,17 @@ const Detail = () => {
                 <strong>{review.memberName}:</strong>
                 <p>{review.content}</p>
                 <p>평점: {review.rating} / 5</p>
-                {isAuthenticated && (
-                  <>
-                    <button onClick={() => handleEditClick(review)}>
-                      수정
-                    </button>
-                    <button onClick={() => handleDeleteReview(review.id)}>
-                      삭제
-                    </button>
-                  </>
-                )}
+                {getUserIdFromToken() === review.memberId &&
+                  isAuthenticated && (
+                    <>
+                      <button onClick={() => handleEditClick(review)}>
+                        수정
+                      </button>
+                      <button onClick={() => handleDeleteReview(review.id)}>
+                        삭제
+                      </button>
+                    </>
+                  )}
               </li>
             )
           )
