@@ -10,7 +10,6 @@ import ProfileInfo from "./components/ProfileInfo";
 import LikedBooks from "./components/LikedBooks";
 import MyReviews from "./components/MyReviews";
 import SignUp from "./components/SignUp";
-import SignUp from "./components/SignUp";
 
 const App = () => {
   return (

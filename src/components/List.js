@@ -79,6 +79,7 @@ const List = () => {
           <option value="rating">평점순</option>
           <option value="year">출판연도순</option>
           <option value="reviewCount">리뷰순</option>
+          <option value="likeCount">좋아요순</option>
         </select>
       </div>
 

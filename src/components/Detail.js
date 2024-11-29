@@ -12,6 +12,7 @@ const Detail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true); // 로그인 상태 확인 변수
+  const [liked, setLiked] = useState(false);
   // 페이징 처리
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
@@ -24,8 +25,8 @@ const Detail = () => {
           `http://localhost:8181/board/detail/${bookId}`
         );
         const data = response.data;
-
         if (data.statusCode === 200) {
+          setLiked(data.result.isLiked);
           setBook(data.result.book); // 책 정보 설정
           setReviews(data.result.reviewList); // 리뷰 목록 설정
         } else {
@@ -46,6 +47,35 @@ const Detail = () => {
     }
   }, [bookId]);
 
+  // 좋아요 토글 핸들러
+  const toggleLike = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8181/board/detail/${bookId}/toggle-like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰 추가
+          },
+        }
+      );
+
+      const { success, isLiked, likeCount } = response.data.result;
+      if (success) {
+        setLiked(isLiked); // 좋아요 상태 업데이트
+        setBook((prevBook) => ({
+          ...prevBook,
+          likeCount, // 좋아요 수 업데이트
+        }));
+      } else {
+        alert("좋아요 처리 중 오류가 발생했습니다.");
+      }
+    } catch (err) {
+      console.error("좋아요 토글 요청 중 오류:", err);
+      alert("좋아요 요청 중 문제가 발생했습니다.");
+    }
+  };
+
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPage) {
       fetchReviews(newPage);
@@ -55,19 +85,24 @@ const Detail = () => {
   const fetchReviews = async (page) => {
     setLoading(true); // 로딩 시작
     try {
+      const headers = {}; // 기본 headers 빈 객체 생성
+
+      // 로그인된 경우에만 Authorization 헤더 추가
+      if (localStorage.getItem("token")) {
+        headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+      }
+
       const response = await axios.get(
         `http://localhost:8181/board/detail/${bookId}?page=${page}&size=${pageSize}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // 로그인된 사용자의 토큰을 보내야 함
-          },
-        }
+        { headers } // headers를 조건부로 전달
       );
+
       const data = response.data;
       console.log("페이지 버튼 클릭 후 전달받은 데이터: ", response.data);
 
       if (data.statusCode === 200) {
         const result = data.result;
+        setLiked(result.isLiked);
         setReviews(result.reviewList); // 현재 페이지의 리뷰 목록
         setCurrentPage(page); // 현재 페이지 번호 업데이트
         setTotalPage(result.page.totalPages); // 전체 페이지 수 설정
@@ -220,19 +255,34 @@ const Detail = () => {
           />
         </div>
         <div className="book-details">
-          <p><strong>저자:</strong> {book.writer}</p>
-          <p><strong>출판년도:</strong> {book.year}</p>
-          <p><strong>출판사:</strong> {book.pub}</p>
-          <p><strong>평점:</strong> {(book.rating / book.reviewCount).toFixed(1)}</p>
-          <p><strong>리뷰수:</strong> {book.reviewCount}</p>
-          <p><strong>좋아요 수:</strong> {book.likeCount}</p>
+          <p>
+            <strong>저자:</strong> {book.writer}
+          </p>
+          <p>
+            <strong>출판년도:</strong> {book.year}
+          </p>
+          <p>
+            <strong>출판사:</strong> {book.pub}
+          </p>
+          <p>
+            <strong>평점:</strong>{" "}
+            {book.reviewCount ? (book.rating / book.reviewCount).toFixed(1) : 0}
+          </p>
+          <p>
+            <strong>리뷰수:</strong> {book.reviewCount}
+          </p>
+          <p>
+            <strong>좋아요 수:</strong> {book.likeCount}
+          </p>
         </div>
       </div>
-  
-      <div className="like-status">
-        <p>{book.liked ? "이미 좋아요를 눌렀습니다." : "좋아요를 누르세요!"}</p>
+
+      <div className="like-button">
+        <button onClick={toggleLike} className={liked ? "liked" : "unliked"}>
+          {liked ? "❤️" : "🤍"}
+        </button>
       </div>
-  
+
       <ul>
         {reviews.length > 0 ? (
           reviews.map((review) =>
@@ -301,7 +351,7 @@ const Detail = () => {
           <p>리뷰가 없습니다.</p>
         )}
       </ul>
-  
+
       {/* 페이징 버튼 */}
       <div className="pagination">
         <button
@@ -310,7 +360,7 @@ const Detail = () => {
         >
           이전
         </button>
-  
+
         {[...Array(totalPage).keys()].map((page) => (
           <button
             key={page}
@@ -323,7 +373,7 @@ const Detail = () => {
             {page + 1}
           </button>
         ))}
-  
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPage - 1}
@@ -331,7 +381,7 @@ const Detail = () => {
           다음
         </button>
       </div>
-  
+
       {isAuthenticated ? (
         <div className="review-form">
           <h3>리뷰 작성</h3>
@@ -369,7 +419,6 @@ const Detail = () => {
       )}
     </div>
   );
-  
 };
 
 export default Detail;

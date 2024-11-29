@@ -15,19 +15,20 @@ const Header = () => {
         Re:Book
       </h1>
       <nav style={styles.nav}>
-        {isLoggedIn ? (
-          <>
-            <span style={styles.memberName}>
-              웰컴,<br></br> {userName}
-            </span>
-            <button onClick={onLogout} style={styles.logoutButton}>
-              로그아웃
-            </button>
-            {/* 카테고리 버튼들 */}
-            <div style={styles.categoryButtons}>
-              <Link to="/board/list" style={styles.categoryButton}>
-                게시판
-              </Link>
+        <div style={styles.categoryButtons}>
+          <Link to="/board/list" style={styles.categoryButton}>
+            게시판
+          </Link>
+          {/* 로그인 상태에 따라 다른 버튼을 보여줍니다. */}
+          {isLoggedIn ? (
+            <>
+              <span style={styles.memberName}>
+                웰컴,<br></br> {userName}
+              </span>
+              <button onClick={onLogout} style={styles.logoutButton}>
+                로그아웃
+              </button>
+              {/* 로그인 후 추가되는 버튼들 */}
               <Link to="/profile/info" style={styles.categoryButton}>
                 내 정보
               </Link>
@@ -37,15 +38,15 @@ const Header = () => {
               <Link to="/profile/my-reviews" style={styles.categoryButton}>
                 내 리뷰
               </Link>
+            </>
+          ) : (
+            <div style={styles.nav}>
+              <a href="/sign-in" style={styles.loginButton}>
+                로그인
+              </a>
             </div>
-          </>
-        ) : (
-          <div style={styles.nav}>
-            <a href="/sign-in" style={styles.loginButton}>
-              로그인
-            </a>
-          </div>
-        )}
+          )}
+        </div>
       </nav>
     </header>
   );
