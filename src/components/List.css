@@ -143,3 +143,8 @@ body {
   background-color: #ddd;
   cursor: not-allowed;
 }
+
+.ratings {
+  font-size: 25px;
+  font-weight: bold;
+}

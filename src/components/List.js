@@ -95,15 +95,15 @@ const List = () => {
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
-              <p>좋아요: {book.likeCount}</p>
-              <p className="rating">
-                평점:{" "}
+              <div className="ratings">
+              <p>❤️ {book.likeCount} ⭐ {" "}
                 {book.reviewCount
                   ? (book.rating / book.reviewCount).toFixed(1)
-                  : 0}
-              </p>
+                  : 0}  🗨 {book.reviewCount}</p>
+              </div>
 
-              <p>리뷰수: {book.reviewCount}</p>
+
+
             </div>
           ))}
         </div>
