@@ -78,7 +78,7 @@
   
   /* 유효성 피드백 스타일 */
   form div > div {
-    font-size: 12px;
+    font-size: 14px;
     color: red;
   }
   
