@@ -18,10 +18,19 @@ const SignUp = () => {
   const [authCodeFeedback, setAuthCodeFeedback] = useState('');
   const [nicknameFeedback, setNicknameFeedback] = useState('');
   const [passwordFeedback, setPasswordFeedback] = useState('');
+  const [countdown, setCountdown] = useState(0);
 
   useEffect(() => {
     toggleSubmitButton();
   }, [isEmailValid, isNicknameValid, isPasswordValid, isAuthCodeValid]);
+
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const handleEmailChange = (e) => {
     const emailValue = e.target.value;
@@ -83,6 +92,7 @@ const SignUp = () => {
 
   const handleSendAuthCode = () => {
     if (isEmailValid) {
+      alert('이메일 인증 번호를 전송 중입니다.');
       axios
         .post('http://localhost:8181/send-auth-code', { email })
         .then((response) => {
@@ -90,11 +100,10 @@ const SignUp = () => {
           console.log(response.data.result.authCode);
           setAuthCodeSent(true);
           setAuthCodeFeedback('인증 코드가 이메일로 전송되었습니다.');
-          alert('인증 코드가 이메일로 전송되었습니다!');
+          setCountdown(60);
         })
         .catch((error) => {
           setAuthCodeFeedback('인증 코드 전송에 실패했습니다.');
-          alert('인증 코드 전송에 실패했습니다.')
         });
     }
   };
@@ -113,7 +122,6 @@ const SignUp = () => {
     e.preventDefault();
 
     if (isEmailValid && isNicknameValid && isPasswordValid && isAuthCodeValid) {
-      // 회원가입 API 호출
       axios
         .post('http://localhost:8181/sign-up', {
           email,
@@ -131,7 +139,6 @@ const SignUp = () => {
   };
 
   const toggleSubmitButton = () => {
-    // 모든 유효성 검사 통과 시 버튼 활성화
     const submitButton = document.getElementById('submit-button');
     if (isEmailValid && isNicknameValid && isPasswordValid && isAuthCodeValid) {
       submitButton.disabled = false;
@@ -177,10 +184,11 @@ const SignUp = () => {
             <button
               type="button"
               onClick={handleVerifyAuthCode}
-              disabled={!authCode}
+              disabled={!authCode || countdown === 0}
             >
               인증 코드 확인
             </button>
+            <span>{countdown > 0 ? `${countdown}초 남음` : '시간 초과'}</span>
             <div>{authCodeFeedback}</div>
           </div>
         )}
