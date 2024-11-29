@@ -1,0 +1,139 @@
+/* 전체 컨테이너 */
+.book-detail-container {
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+.book-detail-container h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* 책 정보 레이아웃 */
+.book-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px; /* 책 표지와 책 정보 간 간격 */
+  margin-bottom: 20px;
+}
+
+/* 책 표지 */
+.book-cover img {
+  width: 150px;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* 책 정보 */
+.book-details {
+  display: flex;
+  flex-direction: column; /* 세로로 정렬 */
+  gap: 8px; /* 각 항목 간 간격 */
+}
+
+.book-details p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 좋아요 상태 */
+.like-status p {
+  text-align: center;
+  font-weight: bold;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* 리뷰 목록 */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+li p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* 리뷰 수정/삭제 버튼 */
+li button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+li button:hover {
+  background-color: #0056b3;
+}
+
+li button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 페이징 버튼 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button[style*="font-weight: bold"] {
+  background-color: #0056b3;
+  text-decoration: underline;
+}
+
+/* 리뷰 작성 폼 */
+.review-form {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+}
+
+.review-form h3 {
+  font-size: 18px;
+}

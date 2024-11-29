@@ -1,0 +1,88 @@
+/* 컨테이너 스타일 */
+.my-reviews-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #333;
+  }
+  
+  /* 제목 스타일 */
+  .my-reviews-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #4a90e2;
+  }
+  
+  /* 리뷰 목록 스타일 */
+  .my-reviews-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .my-reviews-list li {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .my-reviews-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* 리뷰 텍스트 */
+  .my-reviews-list h3 {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .my-reviews-list p {
+    margin: 8px 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+  }
+  
+  .my-reviews-list small {
+    font-size: 0.9rem;
+    color: #888;
+  }
+  
+  /* 버튼 스타일 */
+  .navigate-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #4a90e2, #357abd);
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .navigate-btn:hover {
+    background: linear-gradient(90deg, #357abd, #285d8f);
+  }
+  
+  /* 로딩/에러 메시지 스타일 */
+  .my-reviews-message {
+    text-align: center;
+    font-size: 1rem;
+    color: #888;
+  }
+  

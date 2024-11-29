@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // useParams 임포트
 import axios from "axios";
+import "./Detail.css"; // CSS 파일을 import
 
 const Detail = () => {
   const { bookId } = useParams(); // URL 파라미터에서 bookId 추출
@@ -211,44 +212,34 @@ const Detail = () => {
     <div className="book-detail-container">
       <h1>{book.name} - 상세 정보</h1>
       <div className="book-info">
-        <img
-          src={book.coverImage || "https://via.placeholder.com/150"}
-          alt={book.name}
-          className="book-cover"
-          style={{ width: "150px", height: "auto", marginBottom: "20px" }}
-        />
-        <p>
-          <strong>저자:</strong> {book.writer}
-        </p>
-        <p>
-          <strong>출판년도:</strong> {book.year}
-        </p>
-        <p>
-          <strong>출판사:</strong> {book.pub}
-        </p>
-        <p>
-          <strong>평점:</strong> {(book.rating / book.reviewCount).toFixed(1)}
-        </p>
-        <p>
-          <strong>리뷰수:</strong> {book.reviewCount}
-        </p>
-        <p>
-          <strong>좋아요 수:</strong> {book.likeCount}
-        </p>
+        <div className="book-cover">
+          <img
+            src={book.coverImage || "https://via.placeholder.com/150"}
+            alt={book.name}
+            style={{ width: "150px", height: "auto", marginBottom: "20px" }}
+          />
+        </div>
+        <div className="book-details">
+          <p><strong>저자:</strong> {book.writer}</p>
+          <p><strong>출판년도:</strong> {book.year}</p>
+          <p><strong>출판사:</strong> {book.pub}</p>
+          <p><strong>평점:</strong> {(book.rating / book.reviewCount).toFixed(1)}</p>
+          <p><strong>리뷰수:</strong> {book.reviewCount}</p>
+          <p><strong>좋아요 수:</strong> {book.likeCount}</p>
+        </div>
       </div>
-
+  
       <div className="like-status">
         <p>{book.liked ? "이미 좋아요를 눌렀습니다." : "좋아요를 누르세요!"}</p>
       </div>
-
-      <h2>리뷰 목록</h2>
+  
       <ul>
         {reviews.length > 0 ? (
           reviews.map((review) =>
             modReview && modReview.reviewId === review.id ? (
               // 수정 폼 활성화 상태일 때
               <li key={review.id}>
-                <form onSubmit={handleReviewSubmit}>
+                <form onSubmit={handleUpdateReview}>
                   <div>
                     <label htmlFor="edit-rating">평점:</label>
                     <select
@@ -310,7 +301,7 @@ const Detail = () => {
           <p>리뷰가 없습니다.</p>
         )}
       </ul>
-
+  
       {/* 페이징 버튼 */}
       <div className="pagination">
         <button
@@ -319,7 +310,7 @@ const Detail = () => {
         >
           이전
         </button>
-
+  
         {[...Array(totalPage).keys()].map((page) => (
           <button
             key={page}
@@ -332,7 +323,7 @@ const Detail = () => {
             {page + 1}
           </button>
         ))}
-
+  
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPage - 1}
@@ -340,7 +331,7 @@ const Detail = () => {
           다음
         </button>
       </div>
-
+  
       {isAuthenticated ? (
         <div className="review-form">
           <h3>리뷰 작성</h3>
@@ -378,6 +369,7 @@ const Detail = () => {
       )}
     </div>
   );
+  
 };
 
 export default Detail;

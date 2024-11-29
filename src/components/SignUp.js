@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styles from "./SignUp.module.css";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -7,6 +8,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [authCode, setAuthCode] = useState("");
+  const [generatedAuthCode, setGeneratedAuthCode] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -84,30 +86,27 @@ const SignUp = () => {
       axios
         .post("http://localhost:8181/send-auth-code", { email })
         .then((response) => {
+          setGeneratedAuthCode(response.data.result.authCode);
+          console.log(response.data.result.authCode);
           setAuthCodeSent(true);
           setAuthCodeFeedback("인증 코드가 이메일로 전송되었습니다.");
+          alert("인증 코드가 이메일로 전송되었습니다!");
         })
         .catch((error) => {
           setAuthCodeFeedback("인증 코드 전송에 실패했습니다.");
+          alert("인증 코드 전송에 실패했습니다.");
         });
     }
   };
 
   const handleVerifyAuthCode = () => {
-    axios
-      .post("http://localhost:8181/verify-auth-code", { authCode })
-      .then((response) => {
-        if (response.data.isValid) {
-          setAuthCodeFeedback("인증 코드가 확인되었습니다.");
-          setIsAuthCodeValid(true);
-        } else {
-          setAuthCodeFeedback("인증 코드가 올바르지 않습니다.");
-          setIsAuthCodeValid(false);
-        }
-      })
-      .catch((error) => {
-        setAuthCodeFeedback("인증 코드 확인에 실패했습니다.");
-      });
+    if (authCode === generatedAuthCode) {
+      setAuthCodeFeedback("인증 코드가 확인되었습니다.");
+      setIsAuthCodeValid(true);
+    } else {
+      setAuthCodeFeedback("인증 코드가 올바르지 않습니다.");
+      setIsAuthCodeValid(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -116,7 +115,7 @@ const SignUp = () => {
     if (isEmailValid && isNicknameValid && isPasswordValid && isAuthCodeValid) {
       // 회원가입 API 호출
       axios
-        .post("/sign-up", {
+        .post("http://localhost:8181/sign-up", {
           email,
           nickname,
           password,
@@ -142,8 +141,8 @@ const SignUp = () => {
   };
 
   return (
-    <div className="container">
-      <h2>회원가입</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>회원가입</h2>
 
       <form onSubmit={handleSubmit}>
         <div>
