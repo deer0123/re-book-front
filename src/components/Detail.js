@@ -110,7 +110,7 @@ const Detail = () => {
       );
 
       const data = response.data;
-      console.log("페이지 버튼 클릭 후 전달받은 데이터: ", response.data);
+
 
       if (data.statusCode === 200) {
         const result = data.result;
@@ -168,7 +168,7 @@ const Detail = () => {
         // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
 
         setReviews((prevReviews) => [
-          { ...response.data.result, userId }, // 버튼을 위한 정보 추가
+          { ...response.data.result, memberUuid: userId }, // 버튼을 위한 정보 추가
           ...prevReviews,
         ]);
 
@@ -354,13 +354,13 @@ const Detail = () => {
             ) : (
               // 일반 리뷰 출력 상태일 때
               <li key={review.id}>
-                <strong>{review.memberName}:</strong>
+                <strong>{review.memberName}</strong>
                 <p>{review.content}</p>
                 <p>평점: {review.rating} / 5</p>
                 {isAuthenticated && userId === review.memberUuid && (
                   <>
-                    <p>현재 로그인된 사용자 ID: {userId}</p>
-                    <p>리뷰작성자의ID: {review.memberUuid}</p>
+                    {/* <p>현재 로그인된 사용자 ID: {userId}</p> */}
+                    {/* <p>리뷰작성자의ID: {review.memberUuid}</p> */}
 
                     <button onClick={() => handleEditClick(review)}>
                       수정
