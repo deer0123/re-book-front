@@ -19,6 +19,7 @@ const SignUp = () => {
   const [nicknameFeedback, setNicknameFeedback] = useState('');
   const [passwordFeedback, setPasswordFeedback] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     toggleSubmitButton();
@@ -92,7 +93,8 @@ const SignUp = () => {
 
   const handleSendAuthCode = () => {
     if (isEmailValid) {
-      alert('이메일 인증 번호를 전송 중입니다.');
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000);
       axios
         .post('http://localhost:8181/send-auth-code', { email })
         .then((response) => {
@@ -112,6 +114,7 @@ const SignUp = () => {
     if (authCode === generatedAuthCode) {
       setAuthCodeFeedback('인증 코드가 확인되었습니다.');
       setIsAuthCodeValid(true);
+      setCountdown(0);
     } else {
       setAuthCodeFeedback('인증 코드가 올바르지 않습니다.');
       setIsAuthCodeValid(false);
@@ -169,6 +172,11 @@ const SignUp = () => {
           >
             이메일 인증
           </button>
+          {showAlert && (
+          <div className={styles.alert}>
+            이메일 인증 번호를 전송 중입니다.
+          </div>
+      )}
         </div>
 
         {authCodeSent && (
@@ -188,7 +196,9 @@ const SignUp = () => {
             >
               인증 코드 확인
             </button>
-            <span>{countdown > 0 ? `${countdown}초 남음` : '시간 초과'}</span>
+            <span>
+              {isAuthCodeValid ? '' : (countdown > 0 ? `${countdown}초 남음` : '시간 초과')}
+            </span>
             <div>{authCodeFeedback}</div>
           </div>
         )}
