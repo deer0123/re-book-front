@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // useParams 임포트
+import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 사용
 import axios from "axios";
+import AuthContext from "../context/AuthContext"; // AuthContext 가져오기
 import "./Detail.css"; // CSS 파일을 import
 
 const Detail = () => {
@@ -11,12 +13,15 @@ const Detail = () => {
   const [modReview, setModReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // 로그인 상태 확인 변수
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  ); // 로그인 상태 확인 변수
   const [liked, setLiked] = useState(false);
   // 페이징 처리
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [pageSize] = useState(10);
+  const { userId } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -45,17 +50,24 @@ const Detail = () => {
       fetchBookDetails();
       fetchReviews(0); // 첫 페이지 데이터 요청
     }
-  }, [bookId]);
+  }, []);
 
-  // 좋아요 토글 핸들러
   const toggleLike = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      // 로그인 페이지로 리다이렉트 (선택 사항)
+      // window.location.href = "/login";
+      return; // 토큰이 없으면 더 이상 요청하지 않도록 종료
+    }
+
     try {
       const response = await axios.post(
         `http://localhost:8181/board/detail/${bookId}/toggle-like`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰 추가
+            Authorization: `Bearer ${token}`, // 토큰 추가
           },
         }
       );
@@ -68,7 +80,7 @@ const Detail = () => {
           likeCount, // 좋아요 수 업데이트
         }));
       } else {
-        alert("좋아요 처리 중 오류가 발생했습니다.");
+        alert("좋아요 요청 중 문제가 발생했습니다.");
       }
     } catch (err) {
       console.error("좋아요 토글 요청 중 오류:", err);
@@ -117,7 +129,7 @@ const Detail = () => {
     }
   };
 
-  // 리뷰 작성 처리
+  // 리뷰 작성할때
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
     setNewReview({ ...newReview, [name]: value });
@@ -126,6 +138,13 @@ const Detail = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      // 로그인 페이지로 리다이렉트 (선택 사항)
+      // window.location.href = "/login";
+      return; // 토큰이 없으면 더 이상 요청하지 않도록 종료
+    }
     // 입력 값 검증
     if (!newReview.content || !newReview.rating) {
       alert("리뷰 내용을 입력하고 평점을 선택해주세요.");
@@ -148,7 +167,11 @@ const Detail = () => {
       if (response.data.statusCode === 200) {
         // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
 
-        setReviews((prevReviews) => [response.data.result, ...prevReviews]);
+        setReviews((prevReviews) => [
+          { ...response.data.result, userId }, // 버튼을 위한 정보 추가
+          ...prevReviews,
+        ]);
+
         setNewReview({ rating: "", content: "" }); // 리뷰 작성 후 폼 초기화
       } else {
         setError("리뷰 작성에 실패했습니다.");
@@ -334,8 +357,11 @@ const Detail = () => {
                 <strong>{review.memberName}:</strong>
                 <p>{review.content}</p>
                 <p>평점: {review.rating} / 5</p>
-                {isAuthenticated && (
+                {isAuthenticated && userId === review.memberUuid && (
                   <>
+                    <p>현재 로그인된 사용자 ID: {userId}</p>
+                    <p>리뷰작성자의ID: {review.memberUuid}</p>
+
                     <button onClick={() => handleEditClick(review)}>
                       수정
                     </button>
