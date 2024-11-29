@@ -114,7 +114,7 @@ const List = () => {
       {/* 페이지네이션 */}
       <div className="pagination">
         {currentPageRange[0] > 0 && (
-          <button onClick={handlePreviousRange}>이전 범위</button>
+          <button onClick={handlePreviousRange}>이전</button>
         )}
 
         {Array.from(
@@ -131,7 +131,7 @@ const List = () => {
         ))}
 
         {currentPageRange[1] < totalPages - 1 && (
-          <button onClick={handleNextRange}>다음 범위</button>
+          <button onClick={handleNextRange}>다음</button>
         )}
       </div>
     </div>
