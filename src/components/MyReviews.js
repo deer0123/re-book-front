@@ -9,6 +9,8 @@ const MyReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,29 +20,45 @@ const MyReviews = () => {
     }
 
     const fetchReviews = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const response = await axios.get("http://localhost:8181/profile/my-reviews", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        console.log(`Fetching page: ${currentPage}`); // 현재 페이지 로그 출력
+        const response = await axios.get(
+          `http://localhost:8181/profile/my-reviews?page=${currentPage}&size=5`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        console.log("API Response:", response.data); // API 응답 확인
 
         if (response.data && Array.isArray(response.data.result?.myReviews)) {
           setReviews(response.data.result.myReviews);
+          setTotalPages(response.data.result.pagination.totalPages || 1); // 총 페이지 수 설정
         } else {
           setError("리뷰 데이터를 찾을 수 없습니다.");
         }
       } catch (err) {
         setError("리뷰 목록 조회 중 오류가 발생했습니다.");
-        console.error(err);
+        console.error("API Error:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchReviews();
-  }, [token, navigate]);
+  }, [token, currentPage, navigate]); // currentPage가 변경될 때마다 호출
 
   const handleBookClick = (bookId) => {
-    navigate(`/board/detail/${bookId}`); // 책 상세 페이지로 이동
+    navigate(`/board/detail/${bookId}`);
+  };
+
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      console.log(`Changing to page: ${page}`); // 페이지 변경 로그
+      setCurrentPage(page); // 페이지 상태 업데이트
+    }
   };
 
   if (loading) return <p className="my-reviews-message">로딩 중...</p>;
@@ -57,7 +75,7 @@ const MyReviews = () => {
             <li key={review.id} className="review-item">
               <h3
                 className="review-title"
-                onClick={() => handleBookClick(review.bookId)} // 클릭 시 책 상세 페이지로 이동
+                onClick={() => handleBookClick(review.bookId)}
                 style={{ cursor: "pointer", color: "#4a90e2", textDecoration: "underline" }}
               >
                 {review.bookName || "정보 없음"}
@@ -71,6 +89,31 @@ const MyReviews = () => {
           ))}
         </ul>
       )}
+      {/* 페이지 번호 버튼 생성 */}
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          이전
+        </button>
+        {/* 페이지 번호 버튼 */}
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            className={currentPage === page ? "active" : ""}
+          >
+            {page}
+          </button>
+        ))}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          다음
+        </button>
+      </div>
     </div>
   );
 };
