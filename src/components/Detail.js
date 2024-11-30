@@ -110,7 +110,6 @@ const Detail = () => {
       );
 
       const data = response.data;
-      console.log("페이지 버튼 클릭 후 전달받은 데이터: ", response.data);
 
       if (data.statusCode === 200) {
         const result = data.result;
@@ -168,7 +167,7 @@ const Detail = () => {
         // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
 
         setReviews((prevReviews) => [
-          { ...response.data.result, userId }, // 버튼을 위한 정보 추가
+          { ...response.data.result, memberUuid: userId }, // 버튼을 위한 정보 추가
           ...prevReviews,
         ]);
 
@@ -185,9 +184,15 @@ const Detail = () => {
   // 리뷰 수정
   const handleEditClick = (review) => {
     setModReview({
-      reviewId: review.id, // 수정할 리뷰의 ID
+      reviewId: review.reviewId, // 수정할 리뷰의 ID
       content: review.content, // 기존 내용
       rating: review.rating, // 기존 평점
+    });
+
+    console.log("Updated modReview state:", {
+      reviewId: review.id,
+      content: review.content,
+      rating: review.rating,
     });
   };
 
@@ -195,6 +200,7 @@ const Detail = () => {
     e.preventDefault();
 
     try {
+      // 수정 요청 보내기
       const response = await axios.put(
         `http://localhost:8181/board/detail/${modReview.reviewId}`,
         modReview,
@@ -205,33 +211,60 @@ const Detail = () => {
         }
       );
 
+      console.log("Updated Review Response:", response.data.result);
+      console.log("modReview.reviewId:", modReview.reviewId);
+
+      // 요청 성공 시 상태 업데이트
       if (response.data.statusCode === 200) {
-        setReviews((prevReviews) =>
-          prevReviews.map((review) =>
-            review.id === modReview.reviewId
-              ? { ...review, ...response.data.result }
-              : review
-          )
-        );
+
+        // 상태 업데이트 (리뷰 목록 수정)
+        setReviews((prevReviews) => {
+          const updatedReviews = prevReviews.map((review) => {
+            console.log(
+              "Review ID:",
+              review.id,
+              "ModReview ID:",
+              modReview.reviewId
+            );
+            if (review.reviewId === modReview.reviewId) {
+              console.log("modReview: ", modReview);
+              return {
+                ...review,
+                ...modReview,
+              }; // 수정된 리뷰로 교체
+            }
+            return review; // 나머지는 그대로 유지
+          });
+
+          console.log("Updated Reviews State:", updatedReviews);
+          return updatedReviews;
+        });
+
         alert("리뷰가 성공적으로 수정되었습니다.");
         setModReview(null); // 수정 폼 초기화
       } else {
+        // 요청 실패 시 에러 처리
+        console.error("리뷰 수정 실패:", response.data);
+        alert("리뷰 수정에 실패했습니다.");
         setError("리뷰 수정에 실패했습니다.");
       }
     } catch (err) {
+      // 요청 중 오류 처리
       console.error("리뷰 수정 중 오류가 발생했습니다:", err);
       setError("리뷰 수정 중 오류가 발생했습니다.");
     }
   };
 
   // 리뷰 삭제
-  const handleDeleteReview = async (reviewId) => {
+  const handleDeleteReview = async (review) => {
     const confirmDelete = window.confirm("이 리뷰를 삭제하시겠습니까?");
     if (!confirmDelete) return;
 
+    console.log("review to delete: ", review);
+
     try {
       const response = await axios.delete(
-        `http://localhost:8181/board/detail/${reviewId}`,
+        `http://localhost:8181/board/detail/${review.reviewId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // 사용자 인증 토큰
@@ -241,8 +274,9 @@ const Detail = () => {
 
       if (response.data.statusCode === 200) {
         // 삭제 성공 시 상태 업데이트
-        setReviews((prevReviews) =>
-          prevReviews.filter((review) => review.id !== reviewId)
+        setReviews(
+          (prevReviews) =>
+            prevReviews.filter((r) => r.reviewId !== review.reviewId) // 삭제된 리뷰만 제외
         );
         alert("리뷰가 성공적으로 삭제되었습니다.");
       } else {
@@ -253,7 +287,6 @@ const Detail = () => {
       alert("리뷰 삭제 중 오류가 발생했습니다.");
     }
   };
-
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -309,63 +342,75 @@ const Detail = () => {
       <ul>
         {reviews.length > 0 ? (
           reviews.map((review) =>
-            modReview && modReview.reviewId === review.id ? (
-              // 수정 폼 활성화 상태일 때
-              <li key={review.id}>
-                <form onSubmit={handleUpdateReview}>
-                  <div>
-                    <label htmlFor="edit-rating">평점:</label>
-                    <select
-                      id="edit-rating"
-                      name="rating"
-                      value={modReview.rating}
-                      onChange={(e) =>
-                        setModReview({ ...modReview, rating: e.target.value })
-                      }
+            modReview && modReview.reviewId === review.reviewId ? (
+              // 디버깅 로그 추가
+              (console.log(
+                "Rendering edit form for review:",
+                review,
+                "with modReview:",
+                modReview
+              ),
+              (
+                // 수정 폼 활성화 상태일 때
+                <li key={review.id}>
+                  <form onSubmit={handleUpdateReview}>
+                    <div>
+                      <label htmlFor="edit-rating">평점:</label>
+                      <select
+                        id="edit-rating"
+                        name="rating"
+                        value={modReview.rating}
+                        onChange={(e) =>
+                          setModReview({ ...modReview, rating: e.target.value })
+                        }
+                      >
+                        <option value="">선택</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="edit-content">리뷰 내용:</label>
+                      <textarea
+                        id="edit-content"
+                        name="content"
+                        value={modReview.content}
+                        onChange={(e) =>
+                          setModReview({
+                            ...modReview,
+                            content: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <button type="submit">저장</button>
+                    <button
+                      type="button"
+                      onClick={() => setModReview(null)} // 수정 취소
                     >
-                      <option value="">선택</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="edit-content">리뷰 내용:</label>
-                    <textarea
-                      id="edit-content"
-                      name="content"
-                      value={modReview.content}
-                      onChange={(e) =>
-                        setModReview({ ...modReview, content: e.target.value })
-                      }
-                    />
-                  </div>
-                  <button type="submit">저장</button>
-                  <button
-                    type="button"
-                    onClick={() => setModReview(null)} // 수정 취소
-                  >
-                    취소
-                  </button>
-                </form>
-              </li>
+                      취소
+                    </button>
+                  </form>
+                </li>
+              ))
             ) : (
               // 일반 리뷰 출력 상태일 때
               <li key={review.id}>
-                <strong>{review.memberName}:</strong>
+                <strong>{review.memberName}</strong>
                 <p>{review.content}</p>
                 <p>평점: {review.rating} / 5</p>
                 {isAuthenticated && userId === review.memberUuid && (
                   <>
-                    <p>현재 로그인된 사용자 ID: {userId}</p>
-                    <p>리뷰작성자의ID: {review.memberUuid}</p>
+                    {/* <p>현재 로그인된 사용자 ID: {userId}</p> */}
+                    {/* <p>리뷰작성자의ID: {review.memberUuid}</p> */}
 
                     <button onClick={() => handleEditClick(review)}>
                       수정
                     </button>
-                    <button onClick={() => handleDeleteReview(review.id)}>
+                    <button onClick={() => handleDeleteReview(review)}>
                       삭제
                     </button>
                   </>
