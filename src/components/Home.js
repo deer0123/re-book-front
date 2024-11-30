@@ -1,54 +1,127 @@
 import React, { useEffect, useState } from "react";
-import "./Home.css"; // CSS 파일 import
+import "./Home.css";
+
+function Card({ book, imageUrl }) {
+  return (
+    <div className="card mb-4 shadow-sm">
+      <a href={`/board/detail/${book.bookUuid}`} className="text-decoration-none">
+        <img src={imageUrl} className="card-img-top card-img" alt={`Cover of ${book.bookName}`} />
+        <div className="card-info">
+          <h3 className="card-title">{book.bookName}</h3>
+          <p className="author-pub">
+            {book.bookWriter} | {book.bookPub}
+          </p>
+          <div className="like-rating">
+            <strong>❤️ {book.likeCount}</strong>
+            <strong>
+              ⭐{" "}
+              {book.reviewCount === 0
+                ? "0"
+                : (book.bookRating / book.reviewCount).toFixed(1)}
+            </strong>
+            <strong> 🗨️ {book.reviewCount}</strong>
+          </div>
+        </div>
+      </a>
+    </div>
+  );
+}
+
+function Section({ title, books, imageUrl }) {
+  return (
+    <div>
+      <h2 className="mt-5">{title}</h2>
+      <div className="slider">
+        <div className="slider-wrapper">
+          {books.map((book) => (
+            <Card key={book.bookUuid} book={book} imageUrl={imageUrl} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Home() {
-  const [data, setData] = useState(null); // 초기값을 null로 설정
+  const [data, setData] = useState(null); // API 데이터 저장
+  const [currentSection, setCurrentSection] = useState(0);
 
   useEffect(() => {
-    // 로컬 스토리지에서 토큰을 가져옵니다.
-
-    // API 데이터 가져오기
     fetch("http://localhost:8181/")
       .then((res) => res.json())
       .then((result) => {
-        console.log("API Response:", result);
         if (result.result) {
-          setData(result.result); // result.result 데이터를 상태로 저장
+          setData(result.result);
         }
       })
       .catch((err) => console.error("Error fetching data:", err));
   }, []);
 
+  useEffect(() => {
+    // 3초마다 화면 전환
+    const interval = setInterval(() => {
+      setCurrentSection((prevSection) => (prevSection + 1) % sections.length);
+    }, 3000);
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [currentSection, data]);
+
+
   if (!data) {
-    return <p>Loading...</p>; // 데이터가 없으면 로딩 상태를 표시
+    return <p>Loading...</p>;
   }
 
+  const sections = [
+    {
+      title: "🔥HOT🔥 평점이 높은 도서",
+      books: data.recommendedByRating,
+      imageUrl: "/images/Cover1.jpg",
+    },
+    {
+      title: "🔥HOT🔥 리뷰 수가 많은 도서",
+      books: data.recommendedByReviewCount,
+      imageUrl: "/images/Cover2.jpg",
+    },
+    {
+      title: "🔥HOT🔥 좋아요 수가 많은 도서",
+      books: data.recommendedByLikeCount,
+      imageUrl: "/images/Cover3.jpg",
+    },
+  ];
+
+  const handleSwitchSection = (direction) => {
+    setCurrentSection((prevSection) => (
+      prevSection + direction + sections.length) % sections.length);
+  };
+
   return (
-    <div>
-      <h1>Home</h1>
-      <h2>Recommended by Rating</h2>
-      <ul>
-        {data.recommendedByRating.map((book) => (
-          <li key={book.bookUuid}>
-            {book.bookName} by {book.bookWriter}
-          </li>
-        ))}
-      </ul>
-      <h2>Recommended by Review Count</h2>
-      <ul>
-        {data.recommendedByReviewCount.map((book) => (
-          <li key={book.bookUuid}>
-            {book.bookName} by {book.bookWriter}
-          </li>
-        ))}
-      </ul>
-      <h2>Recommended by Like Count</h2>
-      <ul>
-        {data.recommendedByLikeCount.map((book) => (
-          <li key={book.bookUuid}>
-            {book.bookName} by {book.bookWriter}
-          </li>
-        ))}
-      </ul>
+    <div className="container my-5 text-center">
+      {sections.map((section, index) => (
+        <div
+          key={index}
+          className={`section ${currentSection === index ? "active-section" : ""}`}
+        >
+          <Section
+            title={section.title}
+            books={section.books}
+            imageUrl={section.imageUrl}
+          />
+        </div>
+      ))}
+
+      {/* 전환 버튼 */}
+      <button
+        className="control-button prev-button"
+        onClick={() => handleSwitchSection(-1)}
+      >
+        &#9664;
+      </button>
+      <button
+        className="control-button next-button"
+        onClick={() => handleSwitchSection(1)}
+      >
+        &#9654;
+      </button>
     </div>
   );
 }
