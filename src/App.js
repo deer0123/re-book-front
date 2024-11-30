@@ -26,7 +26,7 @@ const App = () => {
           <Route path="/profile/info" element={<ProfileInfo />} />
           <Route path="/profile/liked-books" element={<LikedBooks />} />
           <Route path="/profile/my-reviews" element={<MyReviews />} />
-          <Route path="/sign-up" element={<SignUp/>} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </AuthProvider>
     </Router>

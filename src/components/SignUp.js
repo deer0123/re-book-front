@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import styles from './SignUp.module.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import styles from "./SignUp.module.css";
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -40,10 +40,10 @@ const SignUp = () => {
 
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (emailPattern.test(emailValue)) {
-      setEmailFeedback('이메일이 유효합니다.');
+      setEmailFeedback("이메일이 유효합니다.");
       setIsEmailValid(true);
     } else {
-      setEmailFeedback('올바른 이메일 형식이 아닙니다.');
+      setEmailFeedback("올바른 이메일 형식이 아닙니다.");
       setIsEmailValid(false);
     }
   };
@@ -53,10 +53,10 @@ const SignUp = () => {
     setNickname(nicknameValue);
 
     if (nicknameValue.length >= 2 && nicknameValue.length <= 8) {
-      setNicknameFeedback('');
+      setNicknameFeedback("");
       setIsNicknameValid(true);
     } else {
-      setNicknameFeedback('닉네임은 2~8자 사이여야 합니다.');
+      setNicknameFeedback("닉네임은 2~8자 사이여야 합니다.");
       setIsNicknameValid(false);
     }
   };
@@ -66,10 +66,10 @@ const SignUp = () => {
     setPassword(passwordValue);
 
     if (passwordValue.length >= 4 && passwordValue.length <= 14) {
-      setPasswordFeedback('');
+      setPasswordFeedback("");
       setIsPasswordValid(true);
     } else {
-      setPasswordFeedback('비밀번호는 4~14자 사이여야 합니다.');
+      setPasswordFeedback("비밀번호는 4~14자 사이여야 합니다.");
       setIsPasswordValid(false);
     }
   };
@@ -79,10 +79,10 @@ const SignUp = () => {
     setConfirmPassword(confirmPasswordValue);
 
     if (confirmPasswordValue === password) {
-      setPasswordFeedback('');
+      setPasswordFeedback("");
       setIsPasswordValid(true);
     } else {
-      setPasswordFeedback('비밀번호가 일치하지 않습니다.');
+      setPasswordFeedback("비밀번호가 일치하지 않습니다.");
       setIsPasswordValid(false);
     }
   };
@@ -97,7 +97,7 @@ const SignUp = () => {
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 2000);
       axios
-        .post('http://localhost:8181/send-auth-code', { email })
+        .post("http://localhost:8181/send-auth-code", { email })
         .then((response) => {
           setGeneratedAuthCode(response.data.result.authCode);
           console.log(response.data.result.authCode);
@@ -106,18 +106,18 @@ const SignUp = () => {
           setCountdown(180);
         })
         .catch((error) => {
-          setAuthCodeFeedback('인증 코드 전송에 실패했습니다.');
+          setAuthCodeFeedback("인증 코드 전송에 실패했습니다.");
         });
     }
   };
 
   const handleVerifyAuthCode = () => {
     if (authCode === generatedAuthCode) {
-      setAuthCodeFeedback('인증 코드가 확인되었습니다.');
+      setAuthCodeFeedback("인증 코드가 확인되었습니다.");
       setIsAuthCodeValid(true);
       setCountdown(0);
     } else {
-      setAuthCodeFeedback('인증 코드가 올바르지 않습니다.');
+      setAuthCodeFeedback("인증 코드가 올바르지 않습니다.");
       setIsAuthCodeValid(false);
     }
   };
@@ -127,23 +127,23 @@ const SignUp = () => {
 
     if (isEmailValid && isNicknameValid && isPasswordValid && isAuthCodeValid) {
       axios
-        .post('http://localhost:8181/sign-up', {
+        .post("http://localhost:8181/sign-up", {
           email,
           nickname,
           password,
           authCode,
         })
         .then((response) => {
-          alert('회원가입 성공!');
+          alert("회원가입 성공!");
         })
         .catch((error) => {
-          alert('회원가입 실패!');
+          alert("회원가입 실패!");
         });
     }
   };
 
   const toggleSubmitButton = () => {
-    const submitButton = document.getElementById('submit-button');
+    const submitButton = document.getElementById("submit-button");
     if (isEmailValid && isNicknameValid && isPasswordValid && isAuthCodeValid) {
       submitButton.disabled = false;
     } else {
@@ -175,6 +175,10 @@ const SignUp = () => {
             이메일 인증
           </button>
           {showAlert && (
+            <div className={styles.alert}>
+              이메일 인증 번호를 전송 중입니다.
+            </div>
+          )}
             <div className={styles.alert}>
               이메일 인증 번호를 전송 중입니다.
             </div>
