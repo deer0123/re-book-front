@@ -165,7 +165,9 @@ const SignUp = () => {
             onChange={handleEmailChange}
             placeholder="이메일 입력"
           />
-          <div>{emailFeedback}</div>
+          <div className={isEmailValid ? styles['valid-feedback'] : styles['invalid-feedback']}>
+            {emailFeedback}
+          </div>
           <br></br>
           <button
             type="button"
@@ -175,7 +177,7 @@ const SignUp = () => {
             이메일 인증
           </button>
           {showAlert && (
-            <div className={styles.alert}>
+            <div className={styles['valid-feedback']}>
               이메일 인증 번호를 전송 중입니다.
             </div>
           )}
@@ -204,7 +206,9 @@ const SignUp = () => {
                   '시간 초과! 이메일 인증을 다시 시도하세요.'
               )}
             </span>
-            <div>{authCodeFeedback}</div>
+            <div className={authCodeSent ? styles['valid-feedback'] : ''}>
+              {authCodeFeedback}
+            </div>
             <br></br>
           </div>
         )}
