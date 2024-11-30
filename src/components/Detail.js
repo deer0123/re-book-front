@@ -188,7 +188,7 @@ const Detail = () => {
       content: review.content, // 기존 내용
       rating: review.rating, // 기존 평점
     });
-    console.log("Activated review for edit:", review); // 클릭한 리뷰 데이터
+
     console.log("Updated modReview state:", {
       reviewId: review.id,
       content: review.content,
@@ -196,46 +196,9 @@ const Detail = () => {
     });
   };
 
-  // const handleUpdateReview = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const response = await axios.put(
-  //       `http://localhost:8181/board/detail/${modReview.reviewId}`,
-  //       modReview,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Updated Review Response:", response.data.result);
-  //     console.log("modReview.reviewId:", modReview.reviewId);
-
-  //     if (response.data.statusCode === 200) {
-  //       const updatedReview = response.data.result;
-  //       setReviews((prevReviews) =>
-  //         prevReviews.map((review) =>
-  //           review.id === modReview.reviewId
-  //             ? { ...review, ...updatedReview }
-  //             : review
-  //         )
-  //       );
-  //       alert("리뷰가 성공적으로 수정되었습니다.");
-  //       setModReview(null); // 수정 폼 초기화
-  //     } else {
-  //       setError("리뷰 수정에 실패했습니다.");
-  //     }
-  //   } catch (err) {
-  //     console.error("리뷰 수정 중 오류가 발생했습니다:", err);
-  //     setError("리뷰 수정 중 오류가 발생했습니다.");
-  //   }
-  // };
-
   const handleUpdateReview = async (e) => {
     e.preventDefault();
-  
+
     try {
       // 수정 요청 보내기
       const response = await axios.put(
@@ -247,29 +210,36 @@ const Detail = () => {
           },
         }
       );
-  
+
       console.log("Updated Review Response:", response.data.result);
       console.log("modReview.reviewId:", modReview.reviewId);
-  
+
       // 요청 성공 시 상태 업데이트
       if (response.data.statusCode === 200) {
-        const updatedReview = response.data.result;
-  
+
         // 상태 업데이트 (리뷰 목록 수정)
         setReviews((prevReviews) => {
           const updatedReviews = prevReviews.map((review) => {
-            console.log("Review ID:", review.id, "ModReview ID:", modReview.reviewId);
+            console.log(
+              "Review ID:",
+              review.id,
+              "ModReview ID:",
+              modReview.reviewId
+            );
             if (review.reviewId === modReview.reviewId) {
-              console.log("Updating review:", review, "with:", updatedReview);
-              return { ...review, ...updatedReview }; // 수정된 리뷰로 교체
+              console.log("modReview: ", modReview);
+              return {
+                ...review,
+                ...modReview,
+              }; // 수정된 리뷰로 교체
             }
             return review; // 나머지는 그대로 유지
           });
-  
+
           console.log("Updated Reviews State:", updatedReviews);
           return updatedReviews;
         });
-  
+
         alert("리뷰가 성공적으로 수정되었습니다.");
         setModReview(null); // 수정 폼 초기화
       } else {
@@ -284,8 +254,6 @@ const Detail = () => {
       setError("리뷰 수정 중 오류가 발생했습니다.");
     }
   };
-  
-  
 
   // 리뷰 삭제
   const handleDeleteReview = async (review) => {
