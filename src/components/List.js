@@ -95,15 +95,15 @@ const List = () => {
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
-              <p>좋아요: {book.likeCount}</p>
-              <p className="rating">
-                평점:{" "}
+              <div className="ratings">
+              <p>❤️ {book.likeCount} ⭐ {" "}
                 {book.reviewCount
                   ? (book.rating / book.reviewCount).toFixed(1)
-                  : 0}
-              </p>
+                  : 0}  🗨 {book.reviewCount}</p>
+              </div>
 
-              <p>리뷰수: {book.reviewCount}</p>
+
+
             </div>
           ))}
         </div>
@@ -114,7 +114,7 @@ const List = () => {
       {/* 페이지네이션 */}
       <div className="pagination">
         {currentPageRange[0] > 0 && (
-          <button onClick={handlePreviousRange}>이전 범위</button>
+          <button onClick={handlePreviousRange}>이전</button>
         )}
 
         {Array.from(
@@ -131,7 +131,7 @@ const List = () => {
         ))}
 
         {currentPageRange[1] < totalPages - 1 && (
-          <button onClick={handleNextRange}>다음 범위</button>
+          <button onClick={handleNextRange}>다음</button>
         )}
       </div>
     </div>
