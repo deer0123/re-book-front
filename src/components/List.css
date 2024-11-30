@@ -127,6 +127,7 @@ body {
 
 .pagination .page-number {
   padding: 10px 15px;
+  color: black;
   border: 1px solid #ccc;
   background-color: #fff;
   cursor: pointer;
@@ -135,10 +136,15 @@ body {
 
 .pagination .page-number.active {
   background-color: #4caf50;
-  color: white;
+  color: black;
 }
 
 .pagination button:disabled {
   background-color: #ddd;
   cursor: not-allowed;
+}
+
+.ratings {
+  font-size: 25px;
+  font-weight: bold;
 }

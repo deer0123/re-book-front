@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // useParams 임포트
+import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 사용
 import axios from "axios";
+import AuthContext from "../context/AuthContext"; // AuthContext 가져오기
 import "./Detail.css"; // CSS 파일을 import
 
 const Detail = () => {
@@ -11,11 +13,15 @@ const Detail = () => {
   const [modReview, setModReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // 로그인 상태 확인 변수
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  ); // 로그인 상태 확인 변수
+  const [liked, setLiked] = useState(false);
   // 페이징 처리
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [pageSize] = useState(10);
+  const { userId } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -24,8 +30,8 @@ const Detail = () => {
           `http://localhost:8181/board/detail/${bookId}`
         );
         const data = response.data;
-
         if (data.statusCode === 200) {
+          setLiked(data.result.isLiked);
           setBook(data.result.book); // 책 정보 설정
           setReviews(data.result.reviewList); // 리뷰 목록 설정
         } else {
@@ -44,7 +50,43 @@ const Detail = () => {
       fetchBookDetails();
       fetchReviews(0); // 첫 페이지 데이터 요청
     }
-  }, [bookId]);
+  }, []);
+
+  const toggleLike = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      // 로그인 페이지로 리다이렉트 (선택 사항)
+      // window.location.href = "/login";
+      return; // 토큰이 없으면 더 이상 요청하지 않도록 종료
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8181/board/detail/${bookId}/toggle-like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 토큰 추가
+          },
+        }
+      );
+
+      const { success, isLiked, likeCount } = response.data.result;
+      if (success) {
+        setLiked(isLiked); // 좋아요 상태 업데이트
+        setBook((prevBook) => ({
+          ...prevBook,
+          likeCount, // 좋아요 수 업데이트
+        }));
+      } else {
+        alert("좋아요 요청 중 문제가 발생했습니다.");
+      }
+    } catch (err) {
+      console.error("좋아요 토글 요청 중 오류:", err);
+      alert("좋아요 요청 중 문제가 발생했습니다.");
+    }
+  };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPage) {
@@ -55,19 +97,24 @@ const Detail = () => {
   const fetchReviews = async (page) => {
     setLoading(true); // 로딩 시작
     try {
+      const headers = {}; // 기본 headers 빈 객체 생성
+
+      // 로그인된 경우에만 Authorization 헤더 추가
+      if (localStorage.getItem("token")) {
+        headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+      }
+
       const response = await axios.get(
         `http://localhost:8181/board/detail/${bookId}?page=${page}&size=${pageSize}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // 로그인된 사용자의 토큰을 보내야 함
-          },
-        }
+        { headers } // headers를 조건부로 전달
       );
+
       const data = response.data;
       console.log("페이지 버튼 클릭 후 전달받은 데이터: ", response.data);
 
       if (data.statusCode === 200) {
         const result = data.result;
+        setLiked(result.isLiked);
         setReviews(result.reviewList); // 현재 페이지의 리뷰 목록
         setCurrentPage(page); // 현재 페이지 번호 업데이트
         setTotalPage(result.page.totalPages); // 전체 페이지 수 설정
@@ -82,7 +129,7 @@ const Detail = () => {
     }
   };
 
-  // 리뷰 작성 처리
+  // 리뷰 작성할때
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
     setNewReview({ ...newReview, [name]: value });
@@ -91,6 +138,13 @@ const Detail = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      // 로그인 페이지로 리다이렉트 (선택 사항)
+      // window.location.href = "/login";
+      return; // 토큰이 없으면 더 이상 요청하지 않도록 종료
+    }
     // 입력 값 검증
     if (!newReview.content || !newReview.rating) {
       alert("리뷰 내용을 입력하고 평점을 선택해주세요.");
@@ -113,7 +167,11 @@ const Detail = () => {
       if (response.data.statusCode === 200) {
         // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
 
-        setReviews((prevReviews) => [response.data.result, ...prevReviews]);
+        setReviews((prevReviews) => [
+          { ...response.data.result, userId }, // 버튼을 위한 정보 추가
+          ...prevReviews,
+        ]);
+
         setNewReview({ rating: "", content: "" }); // 리뷰 작성 후 폼 초기화
       } else {
         setError("리뷰 작성에 실패했습니다.");
@@ -220,19 +278,34 @@ const Detail = () => {
           />
         </div>
         <div className="book-details">
-          <p><strong>저자:</strong> {book.writer}</p>
-          <p><strong>출판년도:</strong> {book.year}</p>
-          <p><strong>출판사:</strong> {book.pub}</p>
-          <p><strong>평점:</strong> {(book.rating / book.reviewCount).toFixed(1)}</p>
-          <p><strong>리뷰수:</strong> {book.reviewCount}</p>
-          <p><strong>좋아요 수:</strong> {book.likeCount}</p>
+          <p>
+            <strong>저자:</strong> {book.writer}
+          </p>
+          <p>
+            <strong>출판년도:</strong> {book.year}
+          </p>
+          <p>
+            <strong>출판사:</strong> {book.pub}
+          </p>
+          <p>
+            <strong>평점:</strong>{" "}
+            {book.reviewCount ? (book.rating / book.reviewCount).toFixed(1) : 0}
+          </p>
+          <p>
+            <strong>리뷰수:</strong> {book.reviewCount}
+          </p>
+          <p>
+            <strong>좋아요 수:</strong> {book.likeCount}
+          </p>
         </div>
       </div>
-  
-      <div className="like-status">
-        <p>{book.liked ? "이미 좋아요를 눌렀습니다." : "좋아요를 누르세요!"}</p>
+
+      <div className="like-button">
+        <button onClick={toggleLike} className={liked ? "liked" : "unliked"}>
+          {liked ? "❤️" : "🤍"}
+        </button>
       </div>
-  
+
       <ul>
         {reviews.length > 0 ? (
           reviews.map((review) =>
@@ -284,8 +357,11 @@ const Detail = () => {
                 <strong>{review.memberName}:</strong>
                 <p>{review.content}</p>
                 <p>평점: {review.rating} / 5</p>
-                {isAuthenticated && (
+                {isAuthenticated && userId === review.memberUuid && (
                   <>
+                    <p>현재 로그인된 사용자 ID: {userId}</p>
+                    <p>리뷰작성자의ID: {review.memberUuid}</p>
+
                     <button onClick={() => handleEditClick(review)}>
                       수정
                     </button>
@@ -301,7 +377,7 @@ const Detail = () => {
           <p>리뷰가 없습니다.</p>
         )}
       </ul>
-  
+
       {/* 페이징 버튼 */}
       <div className="pagination">
         <button
@@ -310,7 +386,7 @@ const Detail = () => {
         >
           이전
         </button>
-  
+
         {[...Array(totalPage).keys()].map((page) => (
           <button
             key={page}
@@ -323,7 +399,7 @@ const Detail = () => {
             {page + 1}
           </button>
         ))}
-  
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPage - 1}
@@ -331,7 +407,7 @@ const Detail = () => {
           다음
         </button>
       </div>
-  
+
       {isAuthenticated ? (
         <div className="review-form">
           <h3>리뷰 작성</h3>
@@ -369,7 +445,6 @@ const Detail = () => {
       )}
     </div>
   );
-  
 };
 
 export default Detail;

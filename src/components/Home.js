@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import "./Home.css"; // CSS 파일 import
 function Home() {
   const [data, setData] = useState(null); // 초기값을 null로 설정
 

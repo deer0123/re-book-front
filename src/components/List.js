@@ -78,6 +78,8 @@ const List = () => {
         <select value={sort} onChange={(e) => setSort(e.target.value)}>
           <option value="rating">평점순</option>
           <option value="year">출판연도순</option>
+          <option value="reviewCount">리뷰순</option>
+          <option value="likeCount">좋아요순</option>
         </select>
       </div>
 
@@ -93,8 +95,15 @@ const List = () => {
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
-              <p className="rating">평점: {(book.rating / book.reviewCount).toFixed(1)}</p>
-              <p>리뷰수: {book.reviewCount}</p>
+              <div className="ratings">
+              <p>❤️ {book.likeCount} ⭐ {" "}
+                {book.reviewCount
+                  ? (book.rating / book.reviewCount).toFixed(1)
+                  : 0}  🗨 {book.reviewCount}</p>
+              </div>
+
+
+
             </div>
           ))}
         </div>
@@ -105,7 +114,7 @@ const List = () => {
       {/* 페이지네이션 */}
       <div className="pagination">
         {currentPageRange[0] > 0 && (
-          <button onClick={handlePreviousRange}>이전 범위</button>
+          <button onClick={handlePreviousRange}>이전</button>
         )}
 
         {Array.from(
@@ -122,7 +131,7 @@ const List = () => {
         ))}
 
         {currentPageRange[1] < totalPages - 1 && (
-          <button onClick={handleNextRange}>다음 범위</button>
+          <button onClick={handleNextRange}>다음</button>
         )}
       </div>
     </div>

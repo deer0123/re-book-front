@@ -137,3 +137,28 @@ li button:disabled {
 .review-form h3 {
   font-size: 18px;
 }
+
+.like-button {
+  display: inline-block; /* 부모 요소 크기 고정 */
+}
+
+.like-button button {
+  font-size: 1.5rem;
+  background-color: white; /* 배경색 흰색으로 설정 */
+  border: none;
+  cursor: pointer;
+  color: gray; /* 기본 텍스트 색상 */
+  transition: background-color 0.2s ease-in-out; /* 배경색 전환 트랜지션 */
+}
+
+.like-button button:focus {
+  outline: none;
+}
+
+.liked {
+  color: red; /* 눌렀을 때 하트 색상 */
+}
+
+.unliked {
+  color: gray; /* 눌리지 않았을 때 하트 색상 */
+}
