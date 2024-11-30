@@ -9,7 +9,7 @@ const MyReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태를 0부터 시작
   const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ const MyReviews = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
+    if (page >= 0 && page < totalPages) { // 0부터 시작하는 페이지네이션
       console.log(`Changing to page: ${page}`); // 페이지 변경 로그
       setCurrentPage(page); // 페이지 상태 업데이트
     }
@@ -93,23 +93,23 @@ const MyReviews = () => {
       <div className="pagination">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          disabled={currentPage === 0} // 첫 페이지에서 "이전" 버튼 비활성화
         >
           이전
         </button>
         {/* 페이지 번호 버튼 */}
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+        {Array.from({ length: totalPages }, (_, index) => index).map((page) => (
           <button
             key={page}
             onClick={() => handlePageChange(page)}
             className={currentPage === page ? "active" : ""}
           >
-            {page}
+            {page + 1} {/* 페이지 번호는 1부터 표시 */}
           </button>
         ))}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages - 1} // 마지막 페이지에서 "다음" 버튼 비활성화
         >
           다음
         </button>

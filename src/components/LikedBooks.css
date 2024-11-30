@@ -1,0 +1,105 @@
+/* 전체 페이지 스타일 */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f5efe6; /* 톤 다운된 베이지 배경 */
+    color: #4a3f35; /* 딥 브라운 텍스트 */
+    margin: 0;
+    padding: 0 20px;
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #b57d52; /* 따뜻한 브라운 */
+    margin: 20px 0;
+  }
+  
+  /* 카드 스타일 */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap; /* 한 줄에 여러 개 표시 */
+    gap: 20px; /* 카드 간격 */
+    justify-content: center;
+  }
+  
+  .card {
+    background-color: #eae4da; /* 카드 배경색 */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    width: 100%;
+    max-width: 320px; /* 한 줄에 두 개씩 배치되도록 최대 너비 설정 */
+    color: #4a3f35;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #dcd4c5; /* Hover 시 살짝 진한 베이지 */
+  }
+  
+  .card-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #b57d52; /* 따뜻한 브라운 */
+    margin-bottom: 10px;
+  }
+  
+  .card-rating {
+    font-size: 1.2rem;
+    color: #d4a373; /* 옐로우 브라운 */
+    margin-bottom: 10px;
+  }
+  
+  .card-content {
+    font-size: 1.1rem;
+    color: #4a3f35;
+    line-height: 1.6;
+  }
+  
+  .no-reviews {
+    text-align: center;
+    margin-top: 40px;
+    color: #7e7366;
+    font-size: 1.4rem;
+  }
+  
+  /* 페이지 네비게이션 */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .pagination button {
+    margin: 0 6px;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: #7e7366; /* 차분한 브라운 */
+    border: 1px solid #b57d52;
+    border-radius: 50%;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold;
+  }
+  
+  .pagination button:hover {
+    background-color: #b57d52;
+    color: #ffffff;
+  }
+  
+  .pagination .active {
+    background-color: #b57d52;
+    color: #ffffff;
+    border: none;
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    .card {
+      max-width: 100%; /* 모바일에서는 한 줄에 한 개씩 */
+    }
+  }
+  
