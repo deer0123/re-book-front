@@ -202,7 +202,7 @@ const SignUp = () => {
             </button>
             <span>
               {isAuthCodeValid ? '' : (
-                countdown > 0 ? `남은 시간: ${Math.floor(countdown / 60)}분 ${countdown % 60}초 남음` :
+                countdown > 0 ? `남은 시간: ${Math.floor(countdown / 60)}분 ${countdown % 60}초` :
                   '시간 초과! 이메일 인증을 다시 시도하세요.'
               )}
             </span>
