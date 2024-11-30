@@ -179,10 +179,6 @@ const SignUp = () => {
               이메일 인증 번호를 전송 중입니다.
             </div>
           )}
-            <div className={styles.alert}>
-              이메일 인증 번호를 전송 중입니다.
-            </div>
-          )}
         </div>
 
         {authCodeSent && (
