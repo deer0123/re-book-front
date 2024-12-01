@@ -66,7 +66,7 @@ const List = () => {
 
   return (
     <div className="container">
-      <h1>책 목록</h1>
+      <h1> 📖Book List </h1>
       <div className="search-bar">
         <input
           type="text"
