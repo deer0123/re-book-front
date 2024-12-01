@@ -10,6 +10,7 @@ import ProfileInfo from "./components/ProfileInfo";
 import LikedBooks from "./components/LikedBooks";
 import MyReviews from "./components/MyReviews";
 import SignUp from "./components/SignUp";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/profile/my-reviews" element={<MyReviews />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>
+        <Footer/>
       </AuthProvider>
     </Router>
   );

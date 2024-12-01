@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import "./Home.css";
+import styles from "./Home.module.css";
 
 function Card({ book, imageUrl }) {
   return (
-    <div className="card mb-4 shadow-sm">
-      <a href={`/board/detail/${book.bookUuid}`} className="text-decoration-none">
-        <img src={imageUrl} className="card-img-top card-img" alt={`Cover of ${book.bookName}`} />
-        <div className="card-info">
-          <h3 className="card-title">{book.bookName}</h3>
-          <p className="author-pub">
+    <div className={`${styles.card} mb-4 shadow-sm`}>
+      <a href={`/board/detail/${book.bookUuid}`} className={styles["text-decoration-none"]}>
+        <img
+          src={imageUrl}
+          className={`${styles["card-img-top"]} ${styles["card-img"]}`}
+          alt={`Cover of ${book.bookName}`}
+        />
+        <div className={styles["card-info"]}>
+          <h3 className={styles["card-title"]}>{book.bookName}</h3>
+          <p className={styles["author-pub"]}>
             {book.bookWriter} | {book.bookPub}
           </p>
-          <div className="like-rating">
+          <div className={styles["like-rating"]}>
             <strong>❤️ {book.likeCount}</strong>
             <strong>
               ⭐{" "}
@@ -29,21 +33,21 @@ function Card({ book, imageUrl }) {
 
 function Section({ title, books, imageUrl }) {
   return (
-    <div>
-      <h2 className="mt-5">{title}</h2>
-      <div className="slider">
-        <div className="slider-wrapper">
+    <>
+      <h2 className={styles["mt-5"]}>{title}</h2>
+      <div className={styles.slider}>
+        <div className={styles["slider-wrapper"]}>
           {books.map((book) => (
             <Card key={book.bookUuid} book={book} imageUrl={imageUrl} />
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
 function Home() {
-  const [data, setData] = useState(null); // API 데이터 저장
+  const [data, setData] = useState(null);
   const [currentSection, setCurrentSection] = useState(0);
 
   useEffect(() => {
@@ -56,16 +60,6 @@ function Home() {
       })
       .catch((err) => console.error("Error fetching data:", err));
   }, []);
-
-  useEffect(() => {
-    // 3초마다 화면 전환
-    const interval = setInterval(() => {
-      setCurrentSection((prevSection) => (prevSection + 1) % sections.length);
-    }, 3000);
-
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [currentSection, data]);
-
 
   if (!data) {
     return <p>Loading...</p>;
@@ -89,17 +83,21 @@ function Home() {
     },
   ];
 
+  // 버튼 클릭 시 섹션 변경
   const handleSwitchSection = (direction) => {
-    setCurrentSection((prevSection) => (
-      prevSection + direction + sections.length) % sections.length);
+    setCurrentSection((prevSection) => (prevSection + direction + sections.length) % sections.length);
   };
 
   return (
-    <div className="container my-5 text-center">
+    <div className={`${styles.container} my-5 text-center`}>
       {sections.map((section, index) => (
         <div
           key={index}
-          className={`section ${currentSection === index ? "active-section" : ""}`}
+          className={`${styles.section} ${currentSection === index ? styles["active-section"] : ""}`}
+          style={{
+            transform: currentSection === index ? "translateX(0)" : currentSection > index ? "translateX(-100%)" : "translateX(100%)",
+            opacity: currentSection === index ? 1 : 0,
+          }}
         >
           <Section
             title={section.title}
@@ -109,15 +107,14 @@ function Home() {
         </div>
       ))}
 
-      {/* 전환 버튼 */}
       <button
-        className="control-button prev-button"
+        className={`${styles["control-button"]} ${styles["prev-button"]}`}
         onClick={() => handleSwitchSection(-1)}
       >
         &#9664;
       </button>
       <button
-        className="control-button next-button"
+        className={`${styles["control-button"]} ${styles["next-button"]}`}
         onClick={() => handleSwitchSection(1)}
       >
         &#9654;

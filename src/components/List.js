@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // useNavigate 임포트
-import "./List.css"; // CSS 파일을 import
+import "./List.css"; // CSS 파일을 import 햇다~
 
 const List = () => {
   const [books, setBooks] = useState([]);
@@ -66,7 +66,7 @@ const List = () => {
 
   return (
     <div className="container">
-      <h1>책 목록</h1>
+      <h1> 📖Book List </h1>
       <div className="search-bar">
         <input
           type="text"
@@ -91,7 +91,13 @@ const List = () => {
               className="book-card"
               onClick={() => handleBookClick(book.id)} // 클릭 시 상세 페이지로 이동
             >
-              {book.coverImage && <img src={book.coverImage} alt={book.name} />}
+                      <div className="book-cover">
+          <img
+            src={book.coverImage || "https://via.placeholder.com/150"}
+            alt={book.name}
+            style={{ width: "150px", height: "auto", marginBottom: "20px" }}
+          />
+        </div>
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
