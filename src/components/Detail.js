@@ -301,7 +301,7 @@ const Detail = () => {
 
   return (
     <div className="book-detail-container">
-      <h1>{book.name} - 상세 정보</h1>
+      <h1>{book.name}</h1>
       <div className="book-info">
         <div className="book-cover">
           <img
@@ -364,12 +364,12 @@ const Detail = () => {
                           setModReview({ ...modReview, rating: e.target.value })
                         }
                       >
-                        <option value="">선택</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
+                        <option value="">평점</option>
+                        <option value="1">⭐</option>
+                        <option value="2">⭐⭐</option>
+                        <option value="3">⭐⭐⭐</option>
+                        <option value="4">⭐⭐⭐⭐</option>
+                        <option value="5">⭐⭐⭐⭐⭐</option>
                       </select>
                     </div>
                     <div>
@@ -400,8 +400,9 @@ const Detail = () => {
               // 일반 리뷰 출력 상태일 때
               <li key={review.id}>
                 <strong>{review.memberName}</strong>
+                <p> {"⭐".repeat(review.rating)}</p>
                 <p>{review.content}</p>
-                <p>평점: {review.rating} / 5</p>
+              
                 {isAuthenticated && userId === review.memberUuid && (
                   <>
                     {/* <p>현재 로그인된 사용자 ID: {userId}</p> */}
@@ -455,22 +456,22 @@ const Detail = () => {
 
       {isAuthenticated ? (
         <div className="review-form">
-          <h3>리뷰 작성</h3>
+          <h3>리뷰</h3>
           <form onSubmit={handleReviewSubmit}>
             <div>
-              <label htmlFor="rating">평점:</label>
+              {/* <label htmlFor="rating">평점:</label> */}
               <select
                 id="rating"
                 name="rating"
                 value={newReview.rating}
                 onChange={handleReviewChange}
               >
-                <option value="">선택</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="">평점</option>
+                <option value="1">⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
               </select>
             </div>
             <div>
