@@ -33,7 +33,7 @@ function Card({ book, imageUrl }) {
 
 function Section({ title, books, imageUrl }) {
   return (
-    <div>
+    <>
       <h2 className={styles["mt-5"]}>{title}</h2>
       <div className={styles.slider}>
         <div className={styles["slider-wrapper"]}>
@@ -42,7 +42,7 @@ function Section({ title, books, imageUrl }) {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -60,14 +60,6 @@ function Home() {
       })
       .catch((err) => console.error("Error fetching data:", err));
   }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSection((prevSection) => (prevSection + 1) % sections.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [currentSection, data]);
 
   if (!data) {
     return <p>Loading...</p>;
@@ -91,9 +83,9 @@ function Home() {
     },
   ];
 
+  // 버튼 클릭 시 섹션 변경
   const handleSwitchSection = (direction) => {
-    setCurrentSection((prevSection) => (
-      prevSection + direction + sections.length) % sections.length);
+    setCurrentSection((prevSection) => (prevSection + direction + sections.length) % sections.length);
   };
 
   return (
@@ -101,9 +93,11 @@ function Home() {
       {sections.map((section, index) => (
         <div
           key={index}
-          className={`${styles.section} ${
-            currentSection === index ? styles["active-section"] : ""
-          }`}
+          className={`${styles.section} ${currentSection === index ? styles["active-section"] : ""}`}
+          style={{
+            transform: currentSection === index ? "translateX(0)" : currentSection > index ? "translateX(-100%)" : "translateX(100%)",
+            opacity: currentSection === index ? 1 : 0,
+          }}
         >
           <Section
             title={section.title}
