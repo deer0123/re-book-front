@@ -109,7 +109,7 @@ body {
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 0px;
   margin-top: 20px;
 }
 

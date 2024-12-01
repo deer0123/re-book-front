@@ -91,7 +91,13 @@ const List = () => {
               className="book-card"
               onClick={() => handleBookClick(book.id)} // 클릭 시 상세 페이지로 이동
             >
-              {book.coverImage && <img src={book.coverImage} alt={book.name} />}
+                      <div className="book-cover">
+          <img
+            src={book.coverImage || "https://via.placeholder.com/150"}
+            alt={book.name}
+            style={{ width: "150px", height: "auto", marginBottom: "20px" }}
+          />
+        </div>
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
