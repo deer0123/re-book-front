@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // useNavigate 임포트
-import "./List.css"; // CSS 파일을 import
+import "./List.css"; // CSS 파일을 import 햇다~
 
 const List = () => {
   const [books, setBooks] = useState([]);
