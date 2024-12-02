@@ -6,11 +6,12 @@ import "./MyReviews.css";
 
 const MyReviews = () => {
   const { token } = useContext(AuthContext);
+  
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태를 0부터 시작
-  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,18 +25,18 @@ const MyReviews = () => {
       setError(null);
 
       try {
-        console.log(`Fetching page: ${currentPage}`); // 현재 페이지 로그 출력
+        console.log(`Fetching page: ${currentPage}`);
         const response = await axios.get(
           `http://localhost:8181/profile/my-reviews?page=${currentPage}&size=5`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("API Response:", response.data); // API 응답 확인
+        console.log("API Response:", response.data);
 
         if (response.data && Array.isArray(response.data.result?.myReviews)) {
           setReviews(response.data.result.myReviews);
-          setTotalPages(response.data.result.pagination.totalPages || 1); // 총 페이지 수 설정
+          setTotalPages(response.data.result.pagination.totalPages || 1);
         } else {
           setError("리뷰 데이터를 찾을 수 없습니다.");
         }
@@ -48,16 +49,16 @@ const MyReviews = () => {
     };
 
     fetchReviews();
-  }, [token, currentPage, navigate]); // currentPage가 변경될 때마다 호출
+  }, [token, currentPage, navigate]);
 
   const handleBookClick = (bookId) => {
     navigate(`/board/detail/${bookId}`);
   };
 
   const handlePageChange = (page) => {
-    if (page >= 0 && page < totalPages) { // 0부터 시작하는 페이지네이션
-      console.log(`Changing to page: ${page}`); // 페이지 변경 로그
-      setCurrentPage(page); // 페이지 상태 업데이트
+    if (page >= 0 && page < totalPages) {
+      console.log(`Changing to page: ${page}`);
+      setCurrentPage(page);
     }
   };
 
@@ -76,7 +77,7 @@ const MyReviews = () => {
               <h3
                 className="review-title"
                 onClick={() => handleBookClick(review.bookId)}
-                style={{ cursor: "pointer", color: "#4a90e2", textDecoration: "underline" }}
+                style={{ cursor: "pointer", color: " #26945f", }}
               >
                 {review.bookName || "정보 없음"}
               </h3>
@@ -84,32 +85,35 @@ const MyReviews = () => {
               <p>
                 <strong>저자:</strong> {review.writer || "정보 없음"}
               </p>
-              <small>평점: {review.rating}</small>
+              <p>
+                <strong>❤️</strong>{review.likeCount || 0} {" "}
+                <strong>⭐</strong>{review.rating}
+              </p>
+              
+              
             </li>
           ))}
         </ul>
       )}
-      {/* 페이지 번호 버튼 생성 */}
       <div className="pagination">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0} // 첫 페이지에서 "이전" 버튼 비활성화
+          disabled={currentPage === 0}
         >
           이전
         </button>
-        {/* 페이지 번호 버튼 */}
         {Array.from({ length: totalPages }, (_, index) => index).map((page) => (
           <button
             key={page}
             onClick={() => handlePageChange(page)}
             className={currentPage === page ? "active" : ""}
           >
-            {page + 1} {/* 페이지 번호는 1부터 표시 */}
+            {page + 1}
           </button>
         ))}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1} // 마지막 페이지에서 "다음" 버튼 비활성화
+          disabled={currentPage === totalPages - 1}
         >
           다음
         </button>
