@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./SignUp.module.css";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [authCode, setAuthCode] = useState('');
-  const [generatedAuthCode, setGeneratedAuthCode] = useState('');
+  const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [authCode, setAuthCode] = useState("");
+  const [generatedAuthCode, setGeneratedAuthCode] = useState("");
   const [countdown, setCountdown] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -16,11 +17,11 @@ const SignUp = () => {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isAuthCodeValid, setIsAuthCodeValid] = useState(false);
   const [authCodeSent, setAuthCodeSent] = useState(false);
-  const [emailFeedback, setEmailFeedback] = useState('');
-  const [authCodeFeedback, setAuthCodeFeedback] = useState('');
-  const [nicknameFeedback, setNicknameFeedback] = useState('');
-  const [passwordFeedback, setPasswordFeedback] = useState('');
-
+  const [emailFeedback, setEmailFeedback] = useState("");
+  const [authCodeFeedback, setAuthCodeFeedback] = useState("");
+  const [nicknameFeedback, setNicknameFeedback] = useState("");
+  const [passwordFeedback, setPasswordFeedback] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     toggleSubmitButton();
@@ -102,7 +103,7 @@ const SignUp = () => {
           setGeneratedAuthCode(response.data.result.authCode);
           console.log(response.data.result.authCode);
           setAuthCodeSent(true);
-          setAuthCodeFeedback('인증 코드가 이메일로 전송되었습니다.');
+          setAuthCodeFeedback("인증 코드가 이메일로 전송되었습니다.");
           setCountdown(180);
         })
         .catch((error) => {
@@ -135,6 +136,7 @@ const SignUp = () => {
         })
         .then((response) => {
           alert("회원가입 성공!");
+          navigate("/");
         })
         .catch((error) => {
           alert("회원가입 실패!");
@@ -165,7 +167,13 @@ const SignUp = () => {
             onChange={handleEmailChange}
             placeholder="이메일 입력"
           />
-          <div className={isEmailValid ? styles['valid-feedback'] : styles['invalid-feedback']}>
+          <div
+            className={
+              isEmailValid
+                ? styles["valid-feedback"]
+                : styles["invalid-feedback"]
+            }
+          >
             {emailFeedback}
           </div>
           <br></br>
@@ -177,7 +185,7 @@ const SignUp = () => {
             이메일 인증
           </button>
           {showAlert && (
-            <div className={styles['valid-feedback']}>
+            <div className={styles["valid-feedback"]}>
               이메일 인증 번호를 전송 중입니다.
             </div>
           )}
@@ -201,12 +209,15 @@ const SignUp = () => {
               인증 코드 확인
             </button>
             <span>
-              {isAuthCodeValid ? '' : (
-                countdown > 0 ? `남은 시간: ${Math.floor(countdown / 60)}분 ${countdown % 60}초` :
-                  '시간 초과! 이메일 인증을 다시 시도하세요.'
-              )}
+              {isAuthCodeValid
+                ? ""
+                : countdown > 0
+                ? `남은 시간: ${Math.floor(countdown / 60)}분 ${
+                    countdown % 60
+                  }초`
+                : "시간 초과! 이메일 인증을 다시 시도하세요."}
             </span>
-            <div className={authCodeSent ? styles['valid-feedback'] : ''}>
+            <div className={authCodeSent ? styles["valid-feedback"] : ""}>
               {authCodeFeedback}
             </div>
             <br></br>
