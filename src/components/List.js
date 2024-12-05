@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // useNavigate 임포트
-import "./List.css"; // CSS 파일을 import 햇다~
-
+import "./List.css"; // CSS 파일을 import
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const List = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const List = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get("http://localhost:8181/board/list", {
+        const response = await axios.get(`${API_BASE_URL}/board/list`, {
           params: { page: page, sort: sort, query: query },
         });
         setBooks(response.data.result.bList);
@@ -91,25 +91,29 @@ const List = () => {
               className="book-card"
               onClick={() => handleBookClick(book.id)} // 클릭 시 상세 페이지로 이동
             >
-                      <div className="book-cover">
-          <img
-            src={book.coverImage || "https://via.placeholder.com/150"}
-            alt={book.name}
-            style={{ width: "150px", height: "auto", marginBottom: "20px" }}
-          />
-        </div>
+              <div className="book-cover">
+                <img
+                  src={book.coverImage || "https://via.placeholder.com/150"}
+                  alt={book.name}
+                  style={{
+                    width: "150px",
+                    height: "auto",
+                    marginBottom: "20px",
+                  }}
+                />
+              </div>
               <h3>{book.name}</h3>
               <p>저자: {book.writer}</p>
               <p>출판년도: {book.year}</p>
               <div className="ratings">
-              <p>❤️ {book.likeCount} ⭐ {" "}
-                {book.reviewCount
-                  ? (book.rating / book.reviewCount).toFixed(1)
-                  : 0}  🗨 {book.reviewCount}</p>
+                <p>
+                  ❤️ {book.likeCount} ⭐{" "}
+                  {book.reviewCount
+                    ? (book.rating / book.reviewCount).toFixed(1)
+                    : 0}{" "}
+                  🗨 {book.reviewCount}
+                </p>
               </div>
-
-
-
             </div>
           ))}
         </div>

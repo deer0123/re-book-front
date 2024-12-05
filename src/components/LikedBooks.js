@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import "./LikedBooks.css";
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const LikedBooks = () => {
   const { token } = useContext(AuthContext);
   const [likedBooks, setLikedBooks] = useState([]);
@@ -25,7 +25,7 @@ const LikedBooks = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:8181/profile/liked-books?page=${currentPage}&size=8`, // 페이지당 8개로 변경
+          `${API_BASE_URL}/profile/liked-books?page=${currentPage}&size=8`, // 페이지당 8개로 변경
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -43,7 +43,9 @@ const LikedBooks = () => {
         }
       } catch (err) {
         if (err.response) {
-          setError(`서버 오류가 발생했습니다. 상태 코드: ${err.response.status}`);
+          setError(
+            `서버 오류가 발생했습니다. 상태 코드: ${err.response.status}`
+          );
         } else if (err.request) {
           setError("서버에 요청을 보내는 중 오류가 발생했습니다.");
         } else {
@@ -74,7 +76,9 @@ const LikedBooks = () => {
     <div className="liked-books-container">
       <h1>내 좋아요 목록</h1>
       {likedBooks.length === 0 ? (
-        <p className="liked-books-message">좋아요 목록이 없습니다. 첫 좋아요를 눌러보세요!</p>
+        <p className="liked-books-message">
+          좋아요 목록이 없습니다. 첫 좋아요를 눌러보세요!
+        </p>
       ) : (
         <div className="liked-books-list">
           {likedBooks.map((book) => (
@@ -85,11 +89,16 @@ const LikedBooks = () => {
               >
                 {book.name || "정보 없음"}
               </h3>
-              <p><strong>저자:</strong> {book.writer || "정보 없음"}</p>
-              <p>❤️ {book.likeCount} ⭐ {" "}
+              <p>
+                <strong>저자:</strong> {book.writer || "정보 없음"}
+              </p>
+              <p>
+                ❤️ {book.likeCount} ⭐{" "}
                 {book.reviewCount
                   ? (book.rating / book.reviewCount).toFixed(1)
-                  : 0}  🗨 {book.reviewCount}</p>
+                  : 0}{" "}
+                🗨 {book.reviewCount}
+              </p>
             </div>
           ))}
         </div>

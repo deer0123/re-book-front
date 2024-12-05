@@ -12,6 +12,7 @@ import AuthContext from "../context/AuthContext.js";
 import { jwtDecode } from "jwt-decode";
 
 import axios from "axios";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ const LoginPage = () => {
     setIsLoading(true); // 로딩 시작
     try {
       const res = await axios.post(
-        "http://localhost:8181/sign-in", // 환경 변수로 API URL 관리
+        `${API_BASE_URL}/sign-in`, // 환경 변수로 API URL 관리
         loginData
       );
 

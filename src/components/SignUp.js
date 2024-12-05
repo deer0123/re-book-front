@@ -22,7 +22,7 @@ const SignUp = () => {
   const [nicknameFeedback, setNicknameFeedback] = useState("");
   const [passwordFeedback, setPasswordFeedback] = useState("");
   const navigate = useNavigate();
-
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   useEffect(() => {
     toggleSubmitButton();
   }, [isEmailValid, isNicknameValid, isPasswordValid, isAuthCodeValid]);
@@ -98,7 +98,7 @@ const SignUp = () => {
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 2000);
       axios
-        .post("http://localhost:8181/send-auth-code", { email })
+        .post(`${API_BASE_URL}/send-auth-code`, { email })
         .then((response) => {
           setGeneratedAuthCode(response.data.result.authCode);
           console.log(response.data.result.authCode);
@@ -128,7 +128,7 @@ const SignUp = () => {
 
     if (isEmailValid && isNicknameValid && isPasswordValid && isAuthCodeValid) {
       axios
-        .post("http://localhost:8181/sign-up", {
+        .post(`${API_BASE_URL}/sign-up`, {
           email,
           nickname,
           password,

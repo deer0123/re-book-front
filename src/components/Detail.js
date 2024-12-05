@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 사용
 import axios from "axios";
 import AuthContext from "../context/AuthContext"; // AuthContext 가져오기
 import "./Detail.css"; // CSS 파일을 import
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Detail = () => {
   const { bookId } = useParams(); // URL 파라미터에서 bookId 추출
@@ -27,7 +28,7 @@ const Detail = () => {
     const fetchBookDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8181/board/detail/${bookId}`
+          `${API_BASE_URL}/board/detail/${bookId}`
         );
         const data = response.data;
         if (data.statusCode === 200) {
@@ -63,7 +64,7 @@ const Detail = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8181/board/detail/${bookId}/toggle-like`,
+        `${API_BASE_URL}/board/detail/${bookId}/toggle-like`,
         {},
         {
           headers: {
@@ -105,7 +106,7 @@ const Detail = () => {
       }
 
       const response = await axios.get(
-        `http://localhost:8181/board/detail/${bookId}?page=${page}&size=${pageSize}`,
+        `${API_BASE_URL}/board/detail/${bookId}?page=${page}&size=${pageSize}`,
         { headers } // headers를 조건부로 전달
       );
 
@@ -153,7 +154,7 @@ const Detail = () => {
     try {
       // 리뷰 작성 API 호출
       const response = await axios.post(
-        `http://localhost:8181/board/detail/${bookId}/create`,
+        `${API_BASE_URL}/board/detail/${bookId}/create`,
         newReview,
         {
           headers: {
@@ -202,7 +203,7 @@ const Detail = () => {
     try {
       // 수정 요청 보내기
       const response = await axios.put(
-        `http://localhost:8181/board/detail/${modReview.reviewId}`,
+        `${API_BASE_URL}/board/detail/${modReview.reviewId}`,
         modReview,
         {
           headers: {
@@ -216,7 +217,6 @@ const Detail = () => {
 
       // 요청 성공 시 상태 업데이트
       if (response.data.statusCode === 200) {
-
         // 상태 업데이트 (리뷰 목록 수정)
         setReviews((prevReviews) => {
           const updatedReviews = prevReviews.map((review) => {
@@ -264,7 +264,7 @@ const Detail = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:8181/board/detail/${review.reviewId}`,
+        `${API_BASE_URL}/board/detail/${review.reviewId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // 사용자 인증 토큰
@@ -402,7 +402,7 @@ const Detail = () => {
                 <strong>{review.memberName}</strong>
                 <p> {"⭐".repeat(review.rating)}</p>
                 <p>{review.content}</p>
-              
+
                 {isAuthenticated && userId === review.memberUuid && (
                   <>
                     {/* <p>현재 로그인된 사용자 ID: {userId}</p> */}

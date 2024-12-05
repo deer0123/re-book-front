@@ -29,7 +29,7 @@ const App = () => {
           <Route path="/profile/my-reviews" element={<MyReviews />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>
-        <Footer/>
+        <Footer />
       </AuthProvider>
     </Router>
   );

@@ -3,10 +3,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import "./MyReviews.css";
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const MyReviews = () => {
   const { token } = useContext(AuthContext);
-  
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,7 +27,7 @@ const MyReviews = () => {
       try {
         console.log(`Fetching page: ${currentPage}`);
         const response = await axios.get(
-          `http://localhost:8181/profile/my-reviews?page=${currentPage}&size=5`,
+          `${API_BASE_URL}/profile/my-reviews?page=${currentPage}&size=5`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -77,7 +77,7 @@ const MyReviews = () => {
               <h3
                 className="review-title"
                 onClick={() => handleBookClick(review.bookId)}
-                style={{ cursor: "pointer", color: " #26945f", }}
+                style={{ cursor: "pointer", color: " #26945f" }}
               >
                 {review.bookName || "정보 없음"}
               </h3>
@@ -86,11 +86,10 @@ const MyReviews = () => {
                 <strong>저자:</strong> {review.writer || "정보 없음"}
               </p>
               <p>
-                <strong>❤️</strong>{review.likeCount || 0} {" "}
-                <strong>⭐</strong>{review.rating}
+                <strong>❤️</strong>
+                {review.likeCount || 0} <strong>⭐</strong>
+                {review.rating}
               </p>
-              
-              
             </li>
           ))}
         </ul>

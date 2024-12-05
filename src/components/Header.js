@@ -25,18 +25,30 @@ const Header = () => {
         <div style={styles.categoryButtons}>
           <Link
             to="/board/list"
-            style={hoveredButton === "board" ? { ...styles.categoryButton, ...styles.categoryButtonHover } : styles.categoryButton}
+            style={
+              hoveredButton === "board"
+                ? { ...styles.categoryButton, ...styles.categoryButtonHover }
+                : styles.categoryButton
+            }
             onMouseEnter={() => handleMouseEnter("board")}
             onMouseLeave={handleMouseLeave}
           >
             게시판
           </Link>
+
           {/* 로그인 상태에 따라 다른 버튼을 보여줍니다. */}
           {isLoggedIn ? (
             <>
               <Link
                 to="/profile/info"
-                style={hoveredButton === "info" ? { ...styles.categoryButton, ...styles.categoryButtonHover } : styles.categoryButton}
+                style={
+                  hoveredButton === "info"
+                    ? {
+                        ...styles.categoryButton,
+                        ...styles.categoryButtonHover,
+                      }
+                    : styles.categoryButton
+                }
                 onMouseEnter={() => handleMouseEnter("info")}
                 onMouseLeave={handleMouseLeave}
               >
@@ -44,7 +56,14 @@ const Header = () => {
               </Link>
               <Link
                 to="/profile/liked-books"
-                style={hoveredButton === "liked-books" ? { ...styles.categoryButton, ...styles.categoryButtonHover } : styles.categoryButton}
+                style={
+                  hoveredButton === "liked-books"
+                    ? {
+                        ...styles.categoryButton,
+                        ...styles.categoryButtonHover,
+                      }
+                    : styles.categoryButton
+                }
                 onMouseEnter={() => handleMouseEnter("liked-books")}
                 onMouseLeave={handleMouseLeave}
               >
@@ -52,14 +71,22 @@ const Header = () => {
               </Link>
               <Link
                 to="/profile/my-reviews"
-                style={hoveredButton === "my-reviews" ? { ...styles.categoryButton, ...styles.categoryButtonHover } : styles.categoryButton}
+                style={
+                  hoveredButton === "my-reviews"
+                    ? {
+                        ...styles.categoryButton,
+                        ...styles.categoryButtonHover,
+                      }
+                    : styles.categoryButton
+                }
                 onMouseEnter={() => handleMouseEnter("my-reviews")}
                 onMouseLeave={handleMouseLeave}
               >
                 내 리뷰
               </Link>
               <span style={styles.memberName}>
-                웰컴,<br></br> {userName}
+                웰컴,
+                <br /> {userName}
               </span>
               <button onClick={onLogout} style={styles.logoutButton}>
                 로그아웃
@@ -67,9 +94,9 @@ const Header = () => {
             </>
           ) : (
             <div style={styles.nav}>
-              <a href="/sign-in" style={styles.loginButton}>
+              <Link to="/sign-in" style={styles.loginButton}>
                 로그인
-              </a>
+              </Link>
             </div>
           )}
         </div>
@@ -113,6 +140,10 @@ const styles = {
     borderRadius: "5px",
     fontWeight: "bold",
     transition: "background-color 0.3s ease, color 0.3s ease",
+    ":hover": {
+      backgroundColor: "#1B5E20", // 로그인 버튼 호버 시 색 변경
+      color: "#fff",
+    },
   },
   logoutButton: {
     background: "#D32F2F",
@@ -123,6 +154,9 @@ const styles = {
     fontWeight: "bold",
     cursor: "pointer",
     transition: "background-color 0.3s ease",
+    ":hover": {
+      backgroundColor: "#B71C1C", // 로그아웃 버튼 호버 시 색 변경
+    },
   },
   categoryButtons: {
     display: "flex",
@@ -135,12 +169,12 @@ const styles = {
     border: "2px solid transparent",
     borderRadius: "5px",
     fontWeight: "bold",
-    backgroundColor: "rgba(0, 64, 0, 0.2)",  
+    backgroundColor: "rgba(0, 64, 0, 0.2)",
     transition: "background-color 0.3s ease, transform 0.2s ease",
   },
   categoryButtonHover: {
-    backgroundColor: "#1B5E20",  // 호버 시 진한 녹색 배경
-    transform: "scale(1.1)",      // 크기 살짝 키우기
+    backgroundColor: "#1B5E20", // 호버 시 진한 녹색 배경
+    transform: "scale(1.1)", // 크기 살짝 키우기
   },
 };
 

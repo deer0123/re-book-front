@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Home.module.css";
+import { Link } from "react-router-dom";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Card({ book, imageUrl }) {
   return (
     <div className={`${styles.card} mb-4 shadow-sm`}>
-      <a href={`/board/detail/${book.bookUuid}`} className={styles["text-decoration-none"]}>
+      <Link
+        to={`/board/detail/${book.bookUuid}`} // a 태그 대신 Link를 사용합니다.
+        className={styles["text-decoration-none"]}
+      >
         <img
           src={imageUrl}
           className={`${styles["card-img-top"]} ${styles["card-img"]}`}
@@ -26,7 +31,7 @@ function Card({ book, imageUrl }) {
             <strong> 🗨️ {book.reviewCount}</strong>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }
@@ -51,7 +56,7 @@ function Home() {
   const [currentSection, setCurrentSection] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:8181/")
+    fetch(`${API_BASE_URL}`)
       .then((res) => res.json())
       .then((result) => {
         if (result.result) {
@@ -85,7 +90,10 @@ function Home() {
 
   // 버튼 클릭 시 섹션 변경
   const handleSwitchSection = (direction) => {
-    setCurrentSection((prevSection) => (prevSection + direction + sections.length) % sections.length);
+    setCurrentSection(
+      (prevSection) =>
+        (prevSection + direction + sections.length) % sections.length
+    );
   };
 
   return (
@@ -93,9 +101,16 @@ function Home() {
       {sections.map((section, index) => (
         <div
           key={index}
-          className={`${styles.section} ${currentSection === index ? styles["active-section"] : ""}`}
+          className={`${styles.section} ${
+            currentSection === index ? styles["active-section"] : ""
+          }`}
           style={{
-            transform: currentSection === index ? "translateX(0)" : currentSection > index ? "translateX(-100%)" : "translateX(100%)",
+            transform:
+              currentSection === index
+                ? "translateX(0)"
+                : currentSection > index
+                ? "translateX(-100%)"
+                : "translateX(100%)",
             opacity: currentSection === index ? 1 : 0,
           }}
         >

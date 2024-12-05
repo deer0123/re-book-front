@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext"; // AuthContext import
 import "./ProfileInfo.css"; // CSS 파일을 import
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const ProfileInfo = () => {
   const { token, setUserName } = useContext(AuthContext); // AuthContext에서 token 가져오기
   const [profile, setProfile] = useState(null); // profile에 들어갈 email,nickname, createdAt
@@ -22,7 +22,7 @@ const ProfileInfo = () => {
       }
 
       try {
-        const response = await axios.get("http://localhost:8181/profile/info", {
+        const response = await axios.get(`${API_BASE_URL}/profile/info`, {
           headers: {
             Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 포함
           },
@@ -48,7 +48,7 @@ const ProfileInfo = () => {
   const handleNicknameChange = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8181/profile/change-nickname",
+        `${API_BASE_URL}/profile/change-nickname`,
         { newNickname }, // 데이터가 JSON 형식으로 전송됩니다
         {
           headers: {
