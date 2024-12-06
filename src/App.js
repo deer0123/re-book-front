@@ -11,7 +11,7 @@ import LikedBooks from "./components/LikedBooks";
 import MyReviews from "./components/MyReviews";
 import SignUp from "./components/SignUp";
 import Footer from "./components/Footer";
-// 자동화 테스트 문구1
+// 자동화 테스트 문구2
 
 const App = () => {
   return (
