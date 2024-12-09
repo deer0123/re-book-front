@@ -29,6 +29,9 @@ jobs:
           echo "REACT_APP_API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .env
         # .env 파일에 API_BASE_URL 값을 주입
 
+      - name: Verify .env file content
+        run: cat .env
+
       - name: Build React App
         # CI=false 옵션: CI환경에서 실행될 때 발생하는 경고를 무시하는 옵션.
         run: CI=false npm run build # 프로덕션 빌드 생성
