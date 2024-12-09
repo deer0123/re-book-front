@@ -27,7 +27,7 @@ jobs:
       - name: Create .env file
         run: |
           echo "${{ secrets.REACT_APP_API_BASE_URL }}" >> .env
-        # .env 파일에 API_BASE_URL 값을 주입
+        # .env 파일에 API_BASE_URL 값을 주입test
 
       - name: Verify .env file content
         run: cat .env
