@@ -109,7 +109,6 @@ li.review-item {
 
 /* 좋아요/평점 스타일 */
 .ratings {
-  display: flex;
   align-items: center;
   gap: 10px;
   font-size: 1.1rem;
