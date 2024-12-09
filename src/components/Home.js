@@ -56,6 +56,8 @@ function Home() {
   const [currentSection, setCurrentSection] = useState(0);
 
   useEffect(() => {
+    console.log(API_BASE_URL);
+    
     fetch(`${API_BASE_URL}`)
       .then((res) => res.json())
       .then((result) => {
