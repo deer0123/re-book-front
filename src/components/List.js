@@ -93,7 +93,7 @@ const List = () => {
             >
               <div className="book-cover">
                 <img
-                  src={book.coverImage || "https://re-book-front1326.s3.ap-northeast-2.amazonaws.com/Book3.jpg"}
+                  src={book.coverImage || "https://re-book-image1326.s3.ap-northeast-2.amazonaws.com/Book3.jpg"}
                   alt={book.name}
                   style={{
                     width: "150px",
