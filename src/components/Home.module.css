@@ -62,9 +62,9 @@ h2 {
   /* 카드 너비 */
   box-sizing: border-box;
   transition: transform 0.3s, box-shadow 0.3s;
-  min-width: 350px;
+  min-width: 50px;
   /* 최소 너비 */
-  max-width: 800px;
+  max-width: 300px;
   /* 최대 너비 */
   min-height: 130px;
 }
@@ -77,13 +77,10 @@ h2 {
 
 .card img {
   width: 100%;
-  /* 카드 너비에 맞춤 */
-  height: auto;
-  /* 비율 유지 */
-  border-radius: 8px;
-  /* 둥근 모서리 */
-  margin-bottom: 0;
-  /* 아래쪽 여백 제거 */
+  height: 350px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .card h3 {
@@ -139,7 +136,7 @@ h2 {
 /* 섹션 전환 버튼 */
 .control-button {
   position: absolute;
-  top: 15%;
+  top: 40%;
   transform: translateY(-50%);
   background-color: #b57d52;
   color: #fff;

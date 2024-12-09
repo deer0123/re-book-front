@@ -110,7 +110,7 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "15px 30px",
+    padding: "2px 20px",
     background: "linear-gradient(90deg, #4CAF50, #2E7D32)", // 그라데이션 배경
     color: "#fff",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // 하단 그림자 효과
@@ -163,6 +163,9 @@ const styles = {
     gap: "15px", // 버튼 간격
   },
   categoryButton: {
+    display: "flex", // 플렉스 컨테이너 활성화
+    justifyContent: "center", // 가로 방향 정렬 (중앙)
+    alignItems: "center", // 세로 방향 정렬 (중앙)
     color: "white",
     textDecoration: "none",
     padding: "8px 15px",

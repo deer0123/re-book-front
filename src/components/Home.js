@@ -76,17 +76,17 @@ function Home() {
     {
       title: "🔥HOT🔥 평점이 높은 도서",
       books: data.recommendedByRating,
-      imageUrl: "/images/Cover1.jpg",
+      imageUrl: "https://re-book-front1326.s3.ap-northeast-2.amazonaws.com/Book3.jpg",
     },
     {
       title: "🔥HOT🔥 리뷰 수가 많은 도서",
       books: data.recommendedByReviewCount,
-      imageUrl: "/images/Cover2.jpg",
+      imageUrl: "https://re-book-front1326.s3.ap-northeast-2.amazonaws.com/Book3.jpg",
     },
     {
       title: "🔥HOT🔥 좋아요 수가 많은 도서",
       books: data.recommendedByLikeCount,
-      imageUrl: "/images/Cover3.jpg",
+      imageUrl: "https://re-book-front1326.s3.ap-northeast-2.amazonaws.com/Book3.jpg",
     },
   ];
 
