@@ -11,7 +11,7 @@ on:
 # 워크플로우에서 실행할 작업을 정의
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest # 작업이 실행될 환경
+    runs-on: ubuntu-latest # 작업이 실행될 환경#
 
     steps:
       - uses: actions/checkout@v4 # 리포지토리 코드 체크아웃 -> 깃허브 액션이 코드를 사용할 수 있게 됨.
