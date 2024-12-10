@@ -19,7 +19,7 @@ const Header = () => {
         style={styles.logo}
         onClick={() => navigate("/")} // 로고 클릭 시 홈으로 이동
       >
-        Re:Books!!
+        Re:Books
       </h1>
       <nav style={styles.nav}>
         <div style={styles.categoryButtons}>
